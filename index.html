@@ -32,6 +32,30 @@
     position:relative;
     overflow:hidden;
   }
+  .lang-switch{
+    position:absolute;
+    top:14px;
+    right:16px;
+    display:flex;
+    gap:4px;
+    z-index:2;
+  }
+  .lang-switch button{
+    font-family:'Montserrat',sans-serif;
+    font-weight:700;
+    font-size:11px;
+    color:rgba(255,255,255,0.6);
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.35);
+    padding:4px 9px;
+    border-radius:20px;
+    cursor:pointer;
+  }
+  .lang-switch button.active{
+    color:var(--deep);
+    background:var(--white);
+    border-color:var(--white);
+  }
   header::after{
     content:"";
     position:absolute;
@@ -439,88 +463,92 @@
 <body>
 
 <header>
+  <div class="lang-switch" id="lang-switch">
+    <button data-lang="fr" class="active">FR</button>
+    <button data-lang="nl">NL</button>
+  </div>
   <div class="since accent-font">Since 2019</div>
   <h1>TGE 2026</h1>
-  <div class="sub">Programme de la semaine et classements en direct pour les équipes du Tenerife Golf Event.</div>
+  <div class="sub" data-i18n="header_sub">Programme de la semaine et classements en direct pour les équipes du Tenerife Golf Event.</div>
 </header>
 
 <nav class="tabs">
-  <button data-panel="programme" class="active">Programme</button>
-  <button data-panel="jour">Classement du jour</button>
-  <button data-panel="general">Classement général</button>
-  <button data-panel="admin">Admin</button>
+  <button data-panel="programme" class="active" data-i18n="nav_programme">Programme</button>
+  <button data-panel="jour" data-i18n="nav_jour">Classement du jour</button>
+  <button data-panel="general" data-i18n="nav_general">Classement général</button>
+  <button data-panel="admin" data-i18n="nav_admin">Admin</button>
 </nav>
 
 <main>
 
   <section id="panel-programme" class="panel active">
-    <h2 class="section-title"><span class="num">01</span> Programme</h2>
-    <div class="info-note">Practices accessibles <strong>1h avant les départs</strong>. Départs vers les trous <strong>15 minutes avant</strong> le Shot Gun.</div>
+    <h2 class="section-title"><span class="num">01</span> <span data-i18n="nav_programme">Programme</span></h2>
+    <div class="info-note" data-i18n-html="programme_info">Practices accessibles <strong>1h avant les départs</strong>. Départs vers les trous <strong>15 minutes avant</strong> le Shot Gun.</div>
     <div class="search-box">
-      <input type="text" id="programme-search" placeholder="Tape ton nom pour ton programme perso">
+      <input type="text" id="programme-search" data-i18n-placeholder="programme_search_ph" placeholder="Tape ton nom pour ton programme perso">
     </div>
     <div id="programme-results"></div>
   </section>
 
   <section id="panel-jour" class="panel">
-    <h2 class="section-title"><span class="num">02</span> Classement du jour</h2>
-    <div class="picker-label">Journée</div>
+    <h2 class="section-title"><span class="num">02</span> <span data-i18n="nav_jour">Classement du jour</span></h2>
+    <div class="picker-label" data-i18n="label_day">Journée</div>
     <div class="pill-picker" id="day-picker"></div>
-    <div class="picker-label">Classement</div>
+    <div class="picker-label" data-i18n="label_ranking">Classement</div>
     <div class="pill-picker" id="jour-metric-picker"></div>
-    <div class="picker-label" id="jour-cat-label">Catégorie</div>
+    <div class="picker-label" id="jour-cat-label" data-i18n="label_category">Catégorie</div>
     <div class="pill-picker" id="jour-cat-picker"></div>
     <div class="search-box">
-      <input type="text" id="jour-search" placeholder="Chercher un joueur">
+      <input type="text" id="jour-search" data-i18n-placeholder="search_player_ph" placeholder="Chercher un joueur">
     </div>
     <div id="jour-results"></div>
   </section>
 
   <section id="panel-general" class="panel">
-    <h2 class="section-title"><span class="num">03</span> Classement général</h2>
-    <div class="picker-label">Classement</div>
+    <h2 class="section-title"><span class="num">03</span> <span data-i18n="nav_general">Classement général</span></h2>
+    <div class="picker-label" data-i18n="label_ranking">Classement</div>
     <div class="pill-picker" id="general-metric-picker"></div>
-    <div class="picker-label" id="general-cat-label">Catégorie</div>
+    <div class="picker-label" id="general-cat-label" data-i18n="label_category">Catégorie</div>
     <div class="pill-picker" id="general-cat-picker"></div>
     <div class="search-box">
-      <input type="text" id="general-search" placeholder="Chercher un joueur">
+      <input type="text" id="general-search" data-i18n-placeholder="search_player_ph" placeholder="Chercher un joueur">
     </div>
     <div id="general-results"></div>
   </section>
 
   <section id="panel-admin" class="panel">
-    <h2 class="section-title"><span class="num">04</span> Admin</h2>
+    <h2 class="section-title"><span class="num">04</span> <span data-i18n="nav_admin">Admin</span></h2>
 
     <div id="admin-gate">
-      <div class="info-note">Accès réservé. Entre le code pour gérer les équipes et saisir les scores.</div>
+      <div class="info-note" data-i18n="admin_gate_note">Accès réservé. Entre le code pour gérer les équipes et saisir les scores.</div>
       <div class="search-box">
-        <input type="password" id="admin-passcode" placeholder="Code d'accès">
-        <button id="admin-unlock-btn" class="btn-primary">Déverrouiller</button>
+        <input type="password" id="admin-passcode" data-i18n-placeholder="admin_passcode_ph" placeholder="Code d'accès">
+        <button id="admin-unlock-btn" class="btn-primary" data-i18n="admin_unlock_btn">Déverrouiller</button>
       </div>
-      <div id="admin-gate-error" class="error" style="display:none;">Code incorrect.</div>
+      <div id="admin-gate-error" class="error" style="display:none;" data-i18n="admin_gate_error">Code incorrect.</div>
     </div>
 
     <div id="admin-content" style="display:none;">
 
-      <h3 class="admin-subtitle">Équipes</h3>
+      <h3 class="admin-subtitle" data-i18n="admin_teams_title">Équipes</h3>
       <div id="admin-bootstrap"></div>
       <div class="admin-add-team">
-        <input type="text" id="admin-new-j1" placeholder="Joueur 1">
-        <input type="text" id="admin-new-j2" placeholder="Joueur 2">
+        <input type="text" id="admin-new-j1" data-i18n-placeholder="admin_player1_ph" placeholder="Joueur 1">
+        <input type="text" id="admin-new-j2" data-i18n-placeholder="admin_player2_ph" placeholder="Joueur 2">
         <select id="admin-new-cat">
-          <option value="Ballesteros">Ballesteros</option>
-          <option value="Jack Nicklaus">Jack Nicklaus</option>
-          <option value="Tiger Woods">Tiger Woods</option>
+          <option value="CAT 1">CAT 1</option>
+          <option value="CAT 2">CAT 2</option>
+          <option value="CAT 3">CAT 3</option>
         </select>
-        <button id="admin-add-team-btn" class="btn-primary">Ajouter l'équipe</button>
+        <button id="admin-add-team-btn" class="btn-primary" data-i18n="admin_add_team_btn">Ajouter l'équipe</button>
       </div>
       <div id="admin-roster"></div>
 
-      <h3 class="admin-subtitle">Scores du jour</h3>
-      <div class="picker-label">Journée</div>
+      <h3 class="admin-subtitle" data-i18n="admin_scores_title">Scores du jour</h3>
+      <div class="picker-label" data-i18n="label_day">Journée</div>
       <div class="pill-picker" id="admin-day-picker"></div>
       <div id="admin-scores"></div>
-      <button id="admin-save-scores-btn" class="btn-primary btn-wide">Enregistrer les scores de cette journée</button>
+      <button id="admin-save-scores-btn" class="btn-primary btn-wide" data-i18n="admin_save_btn">Enregistrer les scores de cette journée</button>
       <div id="admin-save-status"></div>
     </div>
   </section>
@@ -528,7 +556,7 @@
 </main>
 
 <footer class="sponsors">
-  <div class="label">Nos sponsors</div>
+  <div class="label" data-i18n="footer_sponsors_label">Nos sponsors</div>
   <div class="sponsor-grid" id="sponsor-grid"></div>
   <div class="credit">TENERIFE GOLF EVENT &middot; 2026</div>
 </footer>
@@ -568,27 +596,166 @@ const CONFIG = {
   adminPasscode: "EssaiErreur",
   dayNetColumns:  ["NetJ1","NetJ2","NetJ3","NetJ4"],
   dayBrutColumns: ["BrutJ1","BrutJ2","BrutJ3","BrutJ4"],
-  dayLabels: ["Lun 07/09","Mar 08/09","Jeu 10/09","Ven 11/09"],
-  categories: ["Ballesteros","Jack Nicklaus","Tiger Woods"]
+  categories: ["CAT 1","CAT 2","CAT 3"]
 };
+
+/* =========================================================================
+   TRADUCTIONS (FR / NL)
+   ========================================================================= */
+const TRANSLATIONS = {
+  fr: {
+    header_sub: "Programme de la semaine et classements en direct pour les équipes du Tenerife Golf Event.",
+    nav_programme: "Programme",
+    nav_jour: "Classement du jour",
+    nav_general: "Classement général",
+    nav_admin: "Admin",
+    programme_info: 'Practices accessibles <strong>1h avant les départs</strong>. Départs vers les trous <strong>15 minutes avant</strong> le Shot Gun.',
+    programme_search_ph: "Tape ton nom pour ton programme perso",
+    label_day: "Journée",
+    label_ranking: "Classement",
+    label_category: "Catégorie",
+    search_player_ph: "Chercher un joueur",
+    admin_gate_note: "Accès réservé. Entre le code pour gérer les équipes et saisir les scores.",
+    admin_passcode_ph: "Code d'accès",
+    admin_unlock_btn: "Déverrouiller",
+    admin_gate_error: "Code incorrect.",
+    admin_teams_title: "Équipes",
+    admin_player1_ph: "Joueur 1",
+    admin_player2_ph: "Joueur 2",
+    admin_add_team_btn: "Ajouter l'équipe",
+    admin_scores_title: "Scores du jour",
+    admin_save_btn: "Enregistrer les scores de cette journée",
+    footer_sponsors_label: "Nos sponsors",
+    day_sun: "Dimanche", day_mon: "Lundi", day_tue: "Mardi", day_wed: "Mercredi", day_thu: "Jeudi", day_fri: "Vendredi",
+    evening_suffix: "soir",
+    rest_title: "Repos",
+    rdv_label: "RDV",
+    shotgun_label: "Shot Gun",
+    cat12_label: "CAT 1 & 2",
+    cat3_label: "CAT 3",
+    programme_not_found: (q)=>`Aucun joueur trouvé pour "${q}". Vérifie l'orthographe ou consulte le planning général ci-dessous.`,
+    metric_net: "Net (HCP)",
+    metric_brut: "Brut (toutes cat.)",
+    ranking_empty: "Classement pas encore disponible.",
+    search_not_found_player: (q)=>`Aucun joueur trouvé pour "${q}".`,
+    th_pos: "Pos", th_team: "Équipe", th_cat: "Cat.", th_score: "Score",
+    admin_firebase_missing: "Firebase n'est pas encore configuré. Les modifications ne pourront pas être sauvegardées tant que ce n'est pas fait.",
+    admin_import_btn: "Importer la liste 2025 (78 équipes, pour démarrer)",
+    admin_roster_empty: "Aucune équipe pour le moment.",
+    admin_delete_btn: "Supprimer",
+    admin_delete_confirm: "Supprimer cette équipe ?",
+    admin_missing_players: "Renseigne les deux joueurs.",
+    admin_import_error: (m)=>`Import impossible : ${m}`,
+    admin_add_error: (m)=>`Ajout impossible : ${m}`,
+    admin_delete_error: (m)=>`Suppression impossible : ${m}`,
+    admin_save_ok: "Scores enregistrés.",
+    admin_save_error: (m)=>`Erreur : ${m}`,
+    admin_no_category: "Sans catégorie",
+    sponsor_fallback: "Vos logos sponsors ici",
+    err_loading_classement: "Impossible de charger le classement.",
+    ph_brut: "Brut",
+    ph_net: "Net",
+    maps_directions_suffix: "itinéraire"
+  },
+  nl: {
+    header_sub: "Weekprogramma en live klassementen voor de teams van het Tenerife Golf Event.",
+    nav_programme: "Programma",
+    nav_jour: "Klassement van de dag",
+    nav_general: "Algemeen klassement",
+    nav_admin: "Admin",
+    programme_info: 'Practice toegankelijk <strong>1u voor vertrek</strong>. Vertrek naar de holes <strong>15 minuten voor</strong> de Shot Gun.',
+    programme_search_ph: "Typ je naam voor je persoonlijk programma",
+    label_day: "Dag",
+    label_ranking: "Klassement",
+    label_category: "Categorie",
+    search_player_ph: "Zoek een speler",
+    admin_gate_note: "Beperkte toegang. Voer de code in om teams te beheren en scores in te voeren.",
+    admin_passcode_ph: "Toegangscode",
+    admin_unlock_btn: "Ontgrendelen",
+    admin_gate_error: "Onjuiste code.",
+    admin_teams_title: "Teams",
+    admin_player1_ph: "Speler 1",
+    admin_player2_ph: "Speler 2",
+    admin_add_team_btn: "Team toevoegen",
+    admin_scores_title: "Scores van de dag",
+    admin_save_btn: "Scores van deze dag opslaan",
+    footer_sponsors_label: "Onze sponsors",
+    day_sun: "Zondag", day_mon: "Maandag", day_tue: "Dinsdag", day_wed: "Woensdag", day_thu: "Donderdag", day_fri: "Vrijdag",
+    evening_suffix: "avond",
+    rest_title: "Rustdag",
+    rdv_label: "Afspraak",
+    shotgun_label: "Shot Gun",
+    cat12_label: "CAT 1 & 2",
+    cat3_label: "CAT 3",
+    programme_not_found: (q)=>`Geen speler gevonden voor "${q}". Controleer de spelling of bekijk het algemene programma hieronder.`,
+    metric_net: "Net (HCP)",
+    metric_brut: "Bruto (alle cat.)",
+    ranking_empty: "Klassement nog niet beschikbaar.",
+    search_not_found_player: (q)=>`Geen speler gevonden voor "${q}".`,
+    th_pos: "Pos", th_team: "Team", th_cat: "Cat.", th_score: "Score",
+    admin_firebase_missing: "Firebase is nog niet geconfigureerd. Wijzigingen kunnen niet worden opgeslagen tot dit is gebeurd.",
+    admin_import_btn: "Lijst 2025 importeren (78 teams, om te starten)",
+    admin_roster_empty: "Nog geen teams.",
+    admin_delete_btn: "Verwijderen",
+    admin_delete_confirm: "Dit team verwijderen?",
+    admin_missing_players: "Vul beide spelers in.",
+    admin_import_error: (m)=>`Import mislukt: ${m}`,
+    admin_add_error: (m)=>`Toevoegen mislukt: ${m}`,
+    admin_delete_error: (m)=>`Verwijderen mislukt: ${m}`,
+    admin_save_ok: "Scores opgeslagen.",
+    admin_save_error: (m)=>`Fout: ${m}`,
+    admin_no_category: "Geen categorie",
+    sponsor_fallback: "Uw sponsorlogo's hier",
+    err_loading_classement: "Kan het klassement niet laden.",
+    ph_brut: "Bruto",
+    ph_net: "Net",
+    maps_directions_suffix: "route"
+  }
+};
+
+let currentLang = localStorage.getItem('tgeLang') || 'fr';
+
+function t(key, ...args){
+  const dict = TRANSLATIONS[currentLang] || TRANSLATIONS.fr;
+  const val = dict[key] !== undefined ? dict[key] : TRANSLATIONS.fr[key];
+  return typeof val === 'function' ? val(...args) : val;
+}
+
+function applyStaticTranslations(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{ el.innerHTML = t(el.dataset.i18nHtml); });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{ el.placeholder = t(el.dataset.i18nPlaceholder); });
+  document.documentElement.lang = currentLang;
+}
+
+const DAY_LABELS_BASE = [{key:'mon',date:'07/09'},{key:'tue',date:'08/09'},{key:'thu',date:'10/09'},{key:'fri',date:'11/09'}];
+function getDayLabels(){
+  return DAY_LABELS_BASE.map(d=>`${t('day_'+d.key)} ${d.date}`);
+}
+
+function dayDateLabel(day){
+  let label = `${t('day_'+day.dayKey)} ${day.dateNum}`;
+  if(day.evening) label += ` (${t('evening_suffix')})`;
+  return label;
+}
 
 /* ---- Planning fixe de la semaine ---- */
 const WEEK_SCHEDULE = [
-  {date:"Dimanche 06/09", type:"event", title:"Opening Party", venue:"Amarilla Golf Residences", time:"18h00"},
-  {date:"Lundi 07/09", type:"play",
+  {dayKey:"sun", dateNum:"06/09", type:"event", title:"Opening Party", venue:"Amarilla Golf Residences", time:"18h00"},
+  {dayKey:"mon", dateNum:"07/09", type:"play",
     cat12:{course:"Golf del Sur", time:"9h30"},
     cat3:{course:"Golf Costa Adeje", time:"9h00"}},
-  {date:"Mardi 08/09", type:"play",
+  {dayKey:"tue", dateNum:"08/09", type:"play",
     cat12:{course:"Abama Golf", time:"9h00"},
     cat3:{course:"Golf del Sur", time:"9h30"}},
-  {date:"Mercredi 09/09", type:"rest", title:"Repos"},
-  {date:"Jeudi 10/09", type:"play",
+  {dayKey:"wed", dateNum:"09/09", type:"rest", titleKey:"rest_title"},
+  {dayKey:"thu", dateNum:"10/09", type:"play",
     cat12:{course:"Amarilla Golf", time:"9h30"},
     cat3:{course:"Abama Golf", time:"9h00"}},
-  {date:"Vendredi 11/09", type:"play",
+  {dayKey:"fri", dateNum:"11/09", type:"play",
     cat12:{course:"Golf Costa Adeje", time:"9h00"},
     cat3:{course:"Amarilla Golf", time:"9h30"}},
-  {date:"Vendredi 11/09 (soir)", type:"event", title:"Talaïa Night by CBRE (White Party)", venue:"Las Rocas Beach Club", time:"18h30"}
+  {dayKey:"fri", dateNum:"11/09", evening:true, type:"event", title:"Talaïa Night by CBRE (White Party)", venue:"Las Rocas Beach Club", time:"18h30"}
 ];
 
 const COURSES = {
@@ -617,84 +784,84 @@ const SPONSORS = [
 
 const DEMO = {
   classement: [
-    {Joueur1:"CAUVIN Guillaume", Joueur2:"DEROUBAIX François", Categorie:"Jack Nicklaus", BrutJ1:"40", NetJ1:"42", BrutJ2:"33", NetJ2:"37", BrutJ3:"32", NetJ3:"35", BrutJ4:"40", NetJ4:"52"},
-    {Joueur1:"LANSIVAL Nicolas", Joueur2:"SAIVE Philippe", Categorie:"Jack Nicklaus", BrutJ1:"28", NetJ1:"34", BrutJ2:"29", NetJ2:"38", BrutJ3:"30", NetJ3:"39", BrutJ4:"42", NetJ4:"73"},
-    {Joueur1:"GOUVERNEUR Philippe", Joueur2:"GUIDICI Martine*", Categorie:"Jack Nicklaus", BrutJ1:"31", NetJ1:"31", BrutJ2:"30", NetJ2:"36", BrutJ3:"23", NetJ3:"34", BrutJ4:"33", NetJ4:"46"},
-    {Joueur1:"de_WEISSENBRUCH Olivier", Joueur2:"FERRABY James", Categorie:"Jack Nicklaus", BrutJ1:"39", NetJ1:"38", BrutJ2:"37", NetJ2:"42", BrutJ3:"38", NetJ3:"39", BrutJ4:"53", NetJ4:"63"},
-    {Joueur1:"PREUD'HOMME Michel", Joueur2:"ROBIJNS Paul", Categorie:"Jack Nicklaus", BrutJ1:"32", NetJ1:"36", BrutJ2:"25", NetJ2:"32", BrutJ3:"34", NetJ3:"39", BrutJ4:"41", NetJ4:"58"},
-    {Joueur1:"BAMMENS Patrick", Joueur2:"BELLIS Edwin", Categorie:"Jack Nicklaus", BrutJ1:"32", NetJ1:"36", BrutJ2:"24", NetJ2:"31", BrutJ3:"34", NetJ3:"43", BrutJ4:"37", NetJ4:"56"},
-    {Joueur1:"LAPIERRE Maxime", Joueur2:"DUCORNAIT Johan", Categorie:"Jack Nicklaus", BrutJ1:"33", NetJ1:"37", BrutJ2:"34", NetJ2:"40", BrutJ3:"39", NetJ3:"45", BrutJ4:"45", NetJ4:"65"},
-    {Joueur1:"SAGLAM Levent", Joueur2:"LEROY Maxime", Categorie:"Jack Nicklaus", BrutJ1:"36", NetJ1:"39", BrutJ2:"36", NetJ2:"43", BrutJ3:"34", NetJ3:"39", BrutJ4:"46", NetJ4:"66"},
-    {Joueur1:"COUNARD Bruno", Joueur2:"ZBUKARIW Patrick", Categorie:"Jack Nicklaus", BrutJ1:"29", NetJ1:"34", BrutJ2:"27", NetJ2:"35", BrutJ3:"27", NetJ3:"35", BrutJ4:"31", NetJ4:"50"},
-    {Joueur1:"MADHAVJI Mehboob", Joueur2:"MADHAVJI Kalyan", Categorie:"Jack Nicklaus", BrutJ1:"31", NetJ1:"36", BrutJ2:"30", NetJ2:"39", BrutJ3:"39", NetJ3:"48", BrutJ4:"46", NetJ4:"67"},
-    {Joueur1:"SIRONVAL Serge", Joueur2:"GROULUS Christian", Categorie:"Jack Nicklaus", BrutJ1:"36", NetJ1:"41", BrutJ2:"28", NetJ2:"37", BrutJ3:"31", NetJ3:"41", BrutJ4:"39", NetJ4:"62"},
-    {Joueur1:"VAN_DE_VELDE Jan", Joueur2:"DE_GROOTE Wim", Categorie:"Jack Nicklaus", BrutJ1:"24", NetJ1:"29", BrutJ2:"26", NetJ2:"34", BrutJ3:"23", NetJ3:"31", BrutJ4:"20", NetJ4:"38"},
-    {Joueur1:"MADHAVJI Majid", Joueur2:"MADHAVJI Imran", Categorie:"Jack Nicklaus", BrutJ1:"32", NetJ1:"40", BrutJ2:"30", NetJ2:"40", BrutJ3:"38", NetJ3:"48", BrutJ4:"44", NetJ4:"68"},
-    {Joueur1:"VRIJENS Nico", Joueur2:"WANTEN Luc", Categorie:"Jack Nicklaus", BrutJ1:"25", NetJ1:"33", BrutJ2:"25", NetJ2:"37", BrutJ3:"23", NetJ3:"37", BrutJ4:"27", NetJ4:"56"},
-    {Joueur1:"ADLIVANKINE Alexandre", Joueur2:"PLENNEVAUX Michel", Categorie:"Jack Nicklaus", BrutJ1:"26", NetJ1:"32", BrutJ2:"22", NetJ2:"34", BrutJ3:"24", NetJ3:"36", BrutJ4:"27", NetJ4:"52"},
-    {Joueur1:"SEGHERS Roger", Joueur2:"DONOVAN Donald", Categorie:"Jack Nicklaus", BrutJ1:"27", NetJ1:"33", BrutJ2:"33", NetJ2:"44", BrutJ3:"23", NetJ3:"35", BrutJ4:"32", NetJ4:"56"},
-    {Joueur1:"DEBRUYNE Nicolas", Joueur2:"BERT Geert", Categorie:"Jack Nicklaus", BrutJ1:"33", NetJ1:"40", BrutJ2:"24", NetJ2:"35", BrutJ3:"32", NetJ3:"45", BrutJ4:"36", NetJ4:"65"},
-    {Joueur1:"HEYLEN Jan", Joueur2:"VAN_CAUWENBERG Jan", Categorie:"Jack Nicklaus", BrutJ1:"31", NetJ1:"39", BrutJ2:"20", NetJ2:"31", BrutJ3:"29", NetJ3:"40", BrutJ4:"29", NetJ4:"55"},
-    {Joueur1:"PRIGNON Florence*", Joueur2:"JACQUEMART Vincent", Categorie:"Jack Nicklaus", BrutJ1:"26", NetJ1:"32", BrutJ2:"22", NetJ2:"32", BrutJ3:"27", NetJ3:"37", BrutJ4:"23", NetJ4:"40"},
-    {Joueur1:"PAS Wim", Joueur2:"VAN_SCHAEYBROEK Gerd", Categorie:"Jack Nicklaus", BrutJ1:"34", NetJ1:"41", BrutJ2:"27", NetJ2:"39", BrutJ3:"26", NetJ3:"38", BrutJ4:"36", NetJ4:"66"},
-    {Joueur1:"DUMORTIER Dirk", Joueur2:"VANDENABEELE Bert", Categorie:"Ballesteros", BrutJ1:"27", NetJ1:"35", BrutJ2:"24", NetJ2:"35", BrutJ3:"23", NetJ3:"35", BrutJ4:"33", NetJ4:"56"},
-    {Joueur1:"VAN_WYNSBERGHE Isabelle*", Joueur2:"DEBRUYNE Evy*", Categorie:"Ballesteros", BrutJ1:"33", NetJ1:"35", BrutJ2:"27", NetJ2:"34", BrutJ3:"34", NetJ3:"44", BrutJ4:"29", NetJ4:"49"},
-    {Joueur1:"DE_BROGNIEZ Pierre-Olivier", Joueur2:"STORRER Lionel", Categorie:"Ballesteros", BrutJ1:"30", NetJ1:"37", BrutJ2:"27", NetJ2:"41", BrutJ3:"32", NetJ3:"46", BrutJ4:"45", NetJ4:"69"},
-    {Joueur1:"MONBALIU Marc", Joueur2:"VAN_LANDSCHOOT Hilde*", Categorie:"Ballesteros", BrutJ1:"21", NetJ1:"28", BrutJ2:"19", NetJ2:"35", BrutJ3:"28", NetJ3:"40", BrutJ4:"28", NetJ4:"55"},
-    {Joueur1:"LAGOUNE Backhouche", Joueur2:"FRERE Fabien", Categorie:"Ballesteros", BrutJ1:"20", NetJ1:"29", BrutJ2:"18", NetJ2:"33", BrutJ3:"19", NetJ3:"34", BrutJ4:"23", NetJ4:"53"},
-    {Joueur1:"DE_MAEYER Paul", Joueur2:"VANDERBEKE Jan", Categorie:"Ballesteros", BrutJ1:"20", NetJ1:"27", BrutJ2:"19", NetJ2:"34", BrutJ3:"16", NetJ3:"33", BrutJ4:"22", NetJ4:"52"},
-    {Joueur1:"FAES Guy", Joueur2:"VERLINDEN Kristel*", Categorie:"Ballesteros", BrutJ1:"20", NetJ1:"30", BrutJ2:"18", NetJ2:"34", BrutJ3:"22", NetJ3:"39", BrutJ4:"30", NetJ4:"60"},
-    {Joueur1:"NAERT Stefan", Joueur2:"VANDEWALLE Pol", Categorie:"Ballesteros", BrutJ1:"23", NetJ1:"32", BrutJ2:"24", NetJ2:"37", BrutJ3:"21", NetJ3:"37", BrutJ4:"26", NetJ4:"49"},
-    {Joueur1:"DE_LILLE Ronald", Joueur2:"VANWOLLEGHEM Regine*", Categorie:"Ballesteros", BrutJ1:"19", NetJ1:"29", BrutJ2:"23", NetJ2:"37", BrutJ3:"19", NetJ3:"36", BrutJ4:"16", NetJ4:"40"},
-    {Joueur1:"AYDIN John", Joueur2:"PIAZZA Dianele", Categorie:"Ballesteros", BrutJ1:"26", NetJ1:"36", BrutJ2:"26", NetJ2:"43", BrutJ3:"18", NetJ3:"36", BrutJ4:"29", NetJ4:"63"},
-    {Joueur1:"VERMETTEN Ron", Joueur2:"LENAERTS Stef", Categorie:"Ballesteros", BrutJ1:"22", NetJ1:"30", BrutJ2:"21", NetJ2:"38", BrutJ3:"19", NetJ3:"34", BrutJ4:"20", NetJ4:"45"},
-    {Joueur1:"DRIES Georges", Joueur2:"LEBIERE Camille", Categorie:"Ballesteros", BrutJ1:"21", NetJ1:"32", BrutJ2:"20", NetJ2:"37", BrutJ3:"16", NetJ3:"32", BrutJ4:"24", NetJ4:"57"},
-    {Joueur1:"GRYP-CRETS Christel*", Joueur2:"de_BELLEFROID Yves", Categorie:"Ballesteros", BrutJ1:"21", NetJ1:"32", BrutJ2:"18", NetJ2:"35", BrutJ3:"20", NetJ3:"37", BrutJ4:"21", NetJ4:"58"},
-    {Joueur1:"LECLERCQ Didier", Joueur2:"STRAGIER Sabine*", Categorie:"Ballesteros", BrutJ1:"17", NetJ1:"27", BrutJ2:"19", NetJ2:"38", BrutJ3:"24", NetJ3:"41", BrutJ4:"17", NetJ4:"45"},
-    {Joueur1:"MADHAVJI Moez", Joueur2:"MANJI Zakir", Categorie:"Ballesteros", BrutJ1:"21", NetJ1:"32", BrutJ2:"16", NetJ2:"34", BrutJ3:"20", NetJ3:"39", BrutJ4:"15", NetJ4:"52"},
-    {Joueur1:"SAUER Marc", Joueur2:"DEVOOGT Marnix", Categorie:"Ballesteros", BrutJ1:"12", NetJ1:"20", BrutJ2:"14", NetJ2:"31", BrutJ3:"17", NetJ3:"32", BrutJ4:"7", NetJ4:"34"},
-    {Joueur1:"BARZIN Philippe", Joueur2:"BARZIN Corinne*", Categorie:"Ballesteros", BrutJ1:"20", NetJ1:"31", BrutJ2:"25", NetJ2:"42", BrutJ3:"25", NetJ3:"40", BrutJ4:"15", NetJ4:"47"},
-    {Joueur1:"ARTEMIEFF Peter", Joueur2:"MAES Jan", Categorie:"Ballesteros", BrutJ1:"13", NetJ1:"23", BrutJ2:"24", NetJ2:"36", BrutJ3:"15", NetJ3:"27", BrutJ4:"23", NetJ4:"59"},
-    {Joueur1:"BONNE Bart", Joueur2:"BUYSSE Janvier", Categorie:"Ballesteros", BrutJ1:"24", NetJ1:"35", BrutJ2:"29", NetJ2:"46", BrutJ3:"24", NetJ3:"41", BrutJ4:"19", NetJ4:"53"},
-    {Joueur1:"COOLMAN Inge*", Joueur2:"DUMORTIER_STEVENS Caroline*", Categorie:"Ballesteros", BrutJ1:"13", NetJ1:"23", BrutJ2:"15", NetJ2:"33", BrutJ3:"11", NetJ3:"32", BrutJ4:"9", NetJ4:"37"},
-    {Joueur1:"FABRY Claude", Joueur2:"GRESSE Marie-Claire*", Categorie:"Tiger Woods", BrutJ1:"13", NetJ1:"32", BrutJ2:"16", NetJ2:"26", BrutJ3:"16", NetJ3:"33", BrutJ4:"22", NetJ4:"36"},
-    {Joueur1:"JACOBS Guido", Joueur2:"MOUMNI Bob", Categorie:"Tiger Woods", BrutJ1:"22", NetJ1:"41", BrutJ2:"24", NetJ2:"36", BrutJ3:"19", NetJ3:"35", BrutJ4:"30", NetJ4:"44"},
-    {Joueur1:"DE_WAELE Patrick", Joueur2:"DE_WAELE Rita*", Categorie:"Tiger Woods", BrutJ1:"20", NetJ1:"39", BrutJ2:"9", NetJ2:"20", BrutJ3:"10", NetJ3:"28", BrutJ4:"23", NetJ4:"38"},
-    {Joueur1:"DIERCKX Paul", Joueur2:"PLOVIER Patrick", Categorie:"Tiger Woods", BrutJ1:"17", NetJ1:"37", BrutJ2:"15", NetJ2:"25", BrutJ3:"9", NetJ3:"27", BrutJ4:"27", NetJ4:"42"},
-    {Joueur1:"LICK Gilbert", Joueur2:"FOCAN Hélène*", Categorie:"Tiger Woods", BrutJ1:"16", NetJ1:"35", BrutJ2:"16", NetJ2:"26", BrutJ3:"13", NetJ3:"31", BrutJ4:"24", NetJ4:"39"},
-    {Joueur1:"VANHAECKE Carine*", Joueur2:"VAN_DEURSEN Greta*", Categorie:"Tiger Woods", BrutJ1:"16", NetJ1:"38", BrutJ2:"19", NetJ2:"31", BrutJ3:"12", NetJ3:"31", BrutJ4:"23", NetJ4:"38"},
-    {Joueur1:"VANDEVYVER Lut*", Joueur2:"VAN_CALOEN Chantal*", Categorie:"Tiger Woods", BrutJ1:"16", NetJ1:"37", BrutJ2:"12", NetJ2:"19", BrutJ3:"11", NetJ3:"32", BrutJ4:"22", NetJ4:"37"},
-    {Joueur1:"DUFAYS Vincent", Joueur2:"BOELENS Gérard", Categorie:"Tiger Woods", BrutJ1:"23", NetJ1:"45", BrutJ2:"21", NetJ2:"34", BrutJ3:"18", NetJ3:"37", BrutJ4:"20", NetJ4:"36"},
-    {Joueur1:"FERMINE Anne*", Joueur2:"SABEAU Christophe", Categorie:"Tiger Woods", BrutJ1:"18", NetJ1:"41", BrutJ2:"24", NetJ2:"35", BrutJ3:"13", NetJ3:"33", BrutJ4:"34", NetJ4:"47"},
-    {Joueur1:"EISCHEN Germain", Joueur2:"LARUE Annick*", Categorie:"Tiger Woods", BrutJ1:"15", NetJ1:"37", BrutJ2:"14", NetJ2:"25", BrutJ3:"14", NetJ3:"33", BrutJ4:"17", NetJ4:"32"},
-    {Joueur1:"COPPENS Geert", Joueur2:"ORENS Ludo", Categorie:"Tiger Woods", BrutJ1:"20", NetJ1:"35", BrutJ2:"28", NetJ2:"39", BrutJ3:"21", NetJ3:"36", BrutJ4:"21", NetJ4:"34"},
-    {Joueur1:"CNUDDE Conny*", Joueur2:"TAELMAN Frank", Categorie:"Tiger Woods", BrutJ1:"16", NetJ1:"34", BrutJ2:"12", NetJ2:"26", BrutJ3:"10", NetJ3:"31", BrutJ4:"23", NetJ4:"40"},
-    {Joueur1:"LANDUYT Peter", Joueur2:"VAN_PELT Katty*", Categorie:"Tiger Woods", BrutJ1:"11", NetJ1:"32", BrutJ2:"17", NetJ2:"30", BrutJ3:"12", NetJ3:"33", BrutJ4:"27", NetJ4:"44"},
-    {Joueur1:"STAPPAERTS Diane*", Joueur2:"VANSTEELANT Kristof", Categorie:"Tiger Woods", BrutJ1:"15", NetJ1:"35", BrutJ2:"13", NetJ2:"24", BrutJ3:"10", NetJ3:"29", BrutJ4:"20", NetJ4:"37"},
-    {Joueur1:"ROBEYN Dirk", Joueur2:"SNOEYS Isabelle*", Categorie:"Tiger Woods", BrutJ1:"12", NetJ1:"35", BrutJ2:"17", NetJ2:"29", BrutJ3:"13", NetJ3:"35", BrutJ4:"21", NetJ4:"38"},
-    {Joueur1:"VAN_BOUCHAUTE Gilbert", Joueur2:"BOUVET Franck", Categorie:"Tiger Woods", BrutJ1:"18", NetJ1:"40", BrutJ2:"17", NetJ2:"31", BrutJ3:"20", NetJ3:"43", BrutJ4:"23", NetJ4:"40"},
-    {Joueur1:"CAVERENNE Jean-Louis", Joueur2:"T'SERSTEVENS Laurent", Categorie:"Tiger Woods", BrutJ1:"12", NetJ1:"40", BrutJ2:"7", NetJ2:"20", BrutJ3:"11", NetJ3:"38", BrutJ4:"18", NetJ4:"35"},
-    {Joueur1:"DELCOURT Bernard", Joueur2:"SAVU Nicoleta*", Categorie:"Tiger Woods", BrutJ1:"23", NetJ1:"45", BrutJ2:"20", NetJ2:"34", BrutJ3:"10", NetJ3:"29", BrutJ4:"23", NetJ4:"41"},
-    {Joueur1:"CLAUS Filip", Joueur2:"ROMBAUT Françoise*", Categorie:"Tiger Woods", BrutJ1:"14", NetJ1:"36", BrutJ2:"18", NetJ2:"30", BrutJ3:"12", NetJ3:"33", BrutJ4:"18", NetJ4:"36"},
-    {Joueur1:"DE_VRIES Peter", Joueur2:"PROOST Guido", Categorie:"Tiger Woods", BrutJ1:"15", NetJ1:"35", BrutJ2:"22", NetJ2:"35", BrutJ3:"17", NetJ3:"40", BrutJ4:"20", NetJ4:"38"},
-    {Joueur1:"DELVAUX Jean-Louis", Joueur2:"MERVILLE Marie-Paule*", Categorie:"Tiger Woods", BrutJ1:"17", NetJ1:"39", BrutJ2:"11", NetJ2:"24", BrutJ3:"6", NetJ3:"24", BrutJ4:"19", NetJ4:"36"},
-    {Joueur1:"VAN_HOORENWEDER Christine*", Joueur2:"DECLERCK Yvette*", Categorie:"Tiger Woods", BrutJ1:"14", NetJ1:"37", BrutJ2:"9", NetJ2:"18", BrutJ3:"4", NetJ3:"18", BrutJ4:"18", NetJ4:"36"},
-    {Joueur1:"POLET Philippe", Joueur2:"FABRY Yvonne*", Categorie:"Tiger Woods", BrutJ1:"13", NetJ1:"37", BrutJ2:"17", NetJ2:"32", BrutJ3:"4", NetJ3:"22", BrutJ4:"15", NetJ4:"34"},
-    {Joueur1:"WALRAVENS Didier", Joueur2:"DUTZ Regine*", Categorie:"Tiger Woods", BrutJ1:"18", NetJ1:"39", BrutJ2:"16", NetJ2:"30", BrutJ3:"9", NetJ3:"27", BrutJ4:"23", NetJ4:"42"},
-    {Joueur1:"BAUWENS Jannic*", Joueur2:"HUYGENS Tom", Categorie:"Tiger Woods", BrutJ1:"13", NetJ1:"36", BrutJ2:"11", NetJ2:"26", BrutJ3:"11", NetJ3:"35", BrutJ4:"26", NetJ4:"47"},
-    {Joueur1:"BOVE Elisabeth*", Joueur2:"LAUWAERT Monique*", Categorie:"Tiger Woods", BrutJ1:"15", NetJ1:"40", BrutJ2:"10", NetJ2:"24", BrutJ3:"6", NetJ3:"26", BrutJ4:"20", NetJ4:"40"},
-    {Joueur1:"LEYS Erwin", Joueur2:"HERPOEL Benny", Categorie:"Tiger Woods", BrutJ1:"16", NetJ1:"41", BrutJ2:"7", NetJ2:"21", BrutJ3:"8", NetJ3:"30", BrutJ4:"15", NetJ4:"34"},
-    {Joueur1:"LUCASSE Geoffrey", Joueur2:"SOMVILLE Jean-Charles", Categorie:"Tiger Woods", BrutJ1:"19", NetJ1:"39", BrutJ2:"11", NetJ2:"25", BrutJ3:"7", NetJ3:"25", BrutJ4:"16", NetJ4:"32"},
-    {Joueur1:"PIRSON Philippe", Joueur2:"GRIES_PIRSON Françoise*", Categorie:"Tiger Woods", BrutJ1:"17", NetJ1:"45", BrutJ2:"7", NetJ2:"22", BrutJ3:"7", NetJ3:"31", BrutJ4:"20", NetJ4:"40"},
-    {Joueur1:"NOENS Dirk", Joueur2:"VAN_STEELANDT Ingrid*", Categorie:"Tiger Woods", BrutJ1:"18", NetJ1:"39", BrutJ2:"12", NetJ2:"24", BrutJ3:"10", NetJ3:"28", BrutJ4:"18", NetJ4:"37"},
-    {Joueur1:"IRGEL Jacques", Joueur2:"VANDERHAEGHE Carol*", Categorie:"Tiger Woods", BrutJ1:"11", NetJ1:"32", BrutJ2:"6", NetJ2:"19", BrutJ3:"8", NetJ3:"28", BrutJ4:"11", NetJ4:"29"},
-    {Joueur1:"JAMIN Michel", Joueur2:"HUSQUINET Françoise*", Categorie:"Tiger Woods", BrutJ1:"13", NetJ1:"37", BrutJ2:"10", NetJ2:"24", BrutJ3:"11", NetJ3:"30", BrutJ4:"18", NetJ4:"38"},
-    {Joueur1:"GRIES Marie-Christine*", Joueur2:"EPPE Denis", Categorie:"Tiger Woods", BrutJ1:"9", NetJ1:"31", BrutJ2:"7", NetJ2:"21", BrutJ3:"5", NetJ3:"21", BrutJ4:"14", NetJ4:"33"},
-    {Joueur1:"CLARYSSE Bernard", Joueur2:"BRAET Catherine*", Categorie:"Tiger Woods", BrutJ1:"11", NetJ1:"40", BrutJ2:"7", NetJ2:"23", BrutJ3:"11", NetJ3:"40", BrutJ4:"22", NetJ4:"43"},
-    {Joueur1:"ETIENNE Marc", Joueur2:"BINET Marc", Categorie:"Tiger Woods", BrutJ1:"12", NetJ1:"38", BrutJ2:"7", NetJ2:"20", BrutJ3:"10", NetJ3:"35", BrutJ4:"20", NetJ4:"42"},
-    {Joueur1:"RYHEUL Christophe", Joueur2:"SLABBINCK Saskia*", Categorie:"Tiger Woods", BrutJ1:"2", NetJ1:"26", BrutJ2:"10", NetJ2:"24", BrutJ3:"5", NetJ3:"29", BrutJ4:"17", NetJ4:"39"},
-    {Joueur1:"GOVERS Bob", Joueur2:"DEKEYSER Jef", Categorie:"Tiger Woods", BrutJ1:"10", NetJ1:"36", BrutJ2:"8", NetJ2:"25", BrutJ3:"13", NetJ3:"42", BrutJ4:"17", NetJ4:"41"},
-    {Joueur1:"TONKA Jean-Louis", Joueur2:"IACHETTA David", Categorie:"Tiger Woods", BrutJ1:"4", NetJ1:"26", BrutJ2:"8", NetJ2:"22", BrutJ3:"4", NetJ3:"24", BrutJ4:"18", NetJ4:"40"}
+    {Joueur1:"CAUVIN Guillaume", Joueur2:"DEROUBAIX François", Categorie:"CAT 2", BrutJ1:"40", NetJ1:"42", BrutJ2:"33", NetJ2:"37", BrutJ3:"32", NetJ3:"35", BrutJ4:"40", NetJ4:"52"},
+    {Joueur1:"LANSIVAL Nicolas", Joueur2:"SAIVE Philippe", Categorie:"CAT 2", BrutJ1:"28", NetJ1:"34", BrutJ2:"29", NetJ2:"38", BrutJ3:"30", NetJ3:"39", BrutJ4:"42", NetJ4:"73"},
+    {Joueur1:"GOUVERNEUR Philippe", Joueur2:"GUIDICI Martine*", Categorie:"CAT 2", BrutJ1:"31", NetJ1:"31", BrutJ2:"30", NetJ2:"36", BrutJ3:"23", NetJ3:"34", BrutJ4:"33", NetJ4:"46"},
+    {Joueur1:"de_WEISSENBRUCH Olivier", Joueur2:"FERRABY James", Categorie:"CAT 2", BrutJ1:"39", NetJ1:"38", BrutJ2:"37", NetJ2:"42", BrutJ3:"38", NetJ3:"39", BrutJ4:"53", NetJ4:"63"},
+    {Joueur1:"PREUD'HOMME Michel", Joueur2:"ROBIJNS Paul", Categorie:"CAT 2", BrutJ1:"32", NetJ1:"36", BrutJ2:"25", NetJ2:"32", BrutJ3:"34", NetJ3:"39", BrutJ4:"41", NetJ4:"58"},
+    {Joueur1:"BAMMENS Patrick", Joueur2:"BELLIS Edwin", Categorie:"CAT 2", BrutJ1:"32", NetJ1:"36", BrutJ2:"24", NetJ2:"31", BrutJ3:"34", NetJ3:"43", BrutJ4:"37", NetJ4:"56"},
+    {Joueur1:"LAPIERRE Maxime", Joueur2:"DUCORNAIT Johan", Categorie:"CAT 2", BrutJ1:"33", NetJ1:"37", BrutJ2:"34", NetJ2:"40", BrutJ3:"39", NetJ3:"45", BrutJ4:"45", NetJ4:"65"},
+    {Joueur1:"SAGLAM Levent", Joueur2:"LEROY Maxime", Categorie:"CAT 2", BrutJ1:"36", NetJ1:"39", BrutJ2:"36", NetJ2:"43", BrutJ3:"34", NetJ3:"39", BrutJ4:"46", NetJ4:"66"},
+    {Joueur1:"COUNARD Bruno", Joueur2:"ZBUKARIW Patrick", Categorie:"CAT 2", BrutJ1:"29", NetJ1:"34", BrutJ2:"27", NetJ2:"35", BrutJ3:"27", NetJ3:"35", BrutJ4:"31", NetJ4:"50"},
+    {Joueur1:"MADHAVJI Mehboob", Joueur2:"MADHAVJI Kalyan", Categorie:"CAT 2", BrutJ1:"31", NetJ1:"36", BrutJ2:"30", NetJ2:"39", BrutJ3:"39", NetJ3:"48", BrutJ4:"46", NetJ4:"67"},
+    {Joueur1:"SIRONVAL Serge", Joueur2:"GROULUS Christian", Categorie:"CAT 2", BrutJ1:"36", NetJ1:"41", BrutJ2:"28", NetJ2:"37", BrutJ3:"31", NetJ3:"41", BrutJ4:"39", NetJ4:"62"},
+    {Joueur1:"VAN_DE_VELDE Jan", Joueur2:"DE_GROOTE Wim", Categorie:"CAT 2", BrutJ1:"24", NetJ1:"29", BrutJ2:"26", NetJ2:"34", BrutJ3:"23", NetJ3:"31", BrutJ4:"20", NetJ4:"38"},
+    {Joueur1:"MADHAVJI Majid", Joueur2:"MADHAVJI Imran", Categorie:"CAT 2", BrutJ1:"32", NetJ1:"40", BrutJ2:"30", NetJ2:"40", BrutJ3:"38", NetJ3:"48", BrutJ4:"44", NetJ4:"68"},
+    {Joueur1:"VRIJENS Nico", Joueur2:"WANTEN Luc", Categorie:"CAT 2", BrutJ1:"25", NetJ1:"33", BrutJ2:"25", NetJ2:"37", BrutJ3:"23", NetJ3:"37", BrutJ4:"27", NetJ4:"56"},
+    {Joueur1:"ADLIVANKINE Alexandre", Joueur2:"PLENNEVAUX Michel", Categorie:"CAT 2", BrutJ1:"26", NetJ1:"32", BrutJ2:"22", NetJ2:"34", BrutJ3:"24", NetJ3:"36", BrutJ4:"27", NetJ4:"52"},
+    {Joueur1:"SEGHERS Roger", Joueur2:"DONOVAN Donald", Categorie:"CAT 2", BrutJ1:"27", NetJ1:"33", BrutJ2:"33", NetJ2:"44", BrutJ3:"23", NetJ3:"35", BrutJ4:"32", NetJ4:"56"},
+    {Joueur1:"DEBRUYNE Nicolas", Joueur2:"BERT Geert", Categorie:"CAT 2", BrutJ1:"33", NetJ1:"40", BrutJ2:"24", NetJ2:"35", BrutJ3:"32", NetJ3:"45", BrutJ4:"36", NetJ4:"65"},
+    {Joueur1:"HEYLEN Jan", Joueur2:"VAN_CAUWENBERG Jan", Categorie:"CAT 2", BrutJ1:"31", NetJ1:"39", BrutJ2:"20", NetJ2:"31", BrutJ3:"29", NetJ3:"40", BrutJ4:"29", NetJ4:"55"},
+    {Joueur1:"PRIGNON Florence*", Joueur2:"JACQUEMART Vincent", Categorie:"CAT 2", BrutJ1:"26", NetJ1:"32", BrutJ2:"22", NetJ2:"32", BrutJ3:"27", NetJ3:"37", BrutJ4:"23", NetJ4:"40"},
+    {Joueur1:"PAS Wim", Joueur2:"VAN_SCHAEYBROEK Gerd", Categorie:"CAT 2", BrutJ1:"34", NetJ1:"41", BrutJ2:"27", NetJ2:"39", BrutJ3:"26", NetJ3:"38", BrutJ4:"36", NetJ4:"66"},
+    {Joueur1:"DUMORTIER Dirk", Joueur2:"VANDENABEELE Bert", Categorie:"CAT 1", BrutJ1:"27", NetJ1:"35", BrutJ2:"24", NetJ2:"35", BrutJ3:"23", NetJ3:"35", BrutJ4:"33", NetJ4:"56"},
+    {Joueur1:"VAN_WYNSBERGHE Isabelle*", Joueur2:"DEBRUYNE Evy*", Categorie:"CAT 1", BrutJ1:"33", NetJ1:"35", BrutJ2:"27", NetJ2:"34", BrutJ3:"34", NetJ3:"44", BrutJ4:"29", NetJ4:"49"},
+    {Joueur1:"DE_BROGNIEZ Pierre-Olivier", Joueur2:"STORRER Lionel", Categorie:"CAT 1", BrutJ1:"30", NetJ1:"37", BrutJ2:"27", NetJ2:"41", BrutJ3:"32", NetJ3:"46", BrutJ4:"45", NetJ4:"69"},
+    {Joueur1:"MONBALIU Marc", Joueur2:"VAN_LANDSCHOOT Hilde*", Categorie:"CAT 1", BrutJ1:"21", NetJ1:"28", BrutJ2:"19", NetJ2:"35", BrutJ3:"28", NetJ3:"40", BrutJ4:"28", NetJ4:"55"},
+    {Joueur1:"LAGOUNE Backhouche", Joueur2:"FRERE Fabien", Categorie:"CAT 1", BrutJ1:"20", NetJ1:"29", BrutJ2:"18", NetJ2:"33", BrutJ3:"19", NetJ3:"34", BrutJ4:"23", NetJ4:"53"},
+    {Joueur1:"DE_MAEYER Paul", Joueur2:"VANDERBEKE Jan", Categorie:"CAT 1", BrutJ1:"20", NetJ1:"27", BrutJ2:"19", NetJ2:"34", BrutJ3:"16", NetJ3:"33", BrutJ4:"22", NetJ4:"52"},
+    {Joueur1:"FAES Guy", Joueur2:"VERLINDEN Kristel*", Categorie:"CAT 1", BrutJ1:"20", NetJ1:"30", BrutJ2:"18", NetJ2:"34", BrutJ3:"22", NetJ3:"39", BrutJ4:"30", NetJ4:"60"},
+    {Joueur1:"NAERT Stefan", Joueur2:"VANDEWALLE Pol", Categorie:"CAT 1", BrutJ1:"23", NetJ1:"32", BrutJ2:"24", NetJ2:"37", BrutJ3:"21", NetJ3:"37", BrutJ4:"26", NetJ4:"49"},
+    {Joueur1:"DE_LILLE Ronald", Joueur2:"VANWOLLEGHEM Regine*", Categorie:"CAT 1", BrutJ1:"19", NetJ1:"29", BrutJ2:"23", NetJ2:"37", BrutJ3:"19", NetJ3:"36", BrutJ4:"16", NetJ4:"40"},
+    {Joueur1:"AYDIN John", Joueur2:"PIAZZA Dianele", Categorie:"CAT 1", BrutJ1:"26", NetJ1:"36", BrutJ2:"26", NetJ2:"43", BrutJ3:"18", NetJ3:"36", BrutJ4:"29", NetJ4:"63"},
+    {Joueur1:"VERMETTEN Ron", Joueur2:"LENAERTS Stef", Categorie:"CAT 1", BrutJ1:"22", NetJ1:"30", BrutJ2:"21", NetJ2:"38", BrutJ3:"19", NetJ3:"34", BrutJ4:"20", NetJ4:"45"},
+    {Joueur1:"DRIES Georges", Joueur2:"LEBIERE Camille", Categorie:"CAT 1", BrutJ1:"21", NetJ1:"32", BrutJ2:"20", NetJ2:"37", BrutJ3:"16", NetJ3:"32", BrutJ4:"24", NetJ4:"57"},
+    {Joueur1:"GRYP-CRETS Christel*", Joueur2:"de_BELLEFROID Yves", Categorie:"CAT 1", BrutJ1:"21", NetJ1:"32", BrutJ2:"18", NetJ2:"35", BrutJ3:"20", NetJ3:"37", BrutJ4:"21", NetJ4:"58"},
+    {Joueur1:"LECLERCQ Didier", Joueur2:"STRAGIER Sabine*", Categorie:"CAT 1", BrutJ1:"17", NetJ1:"27", BrutJ2:"19", NetJ2:"38", BrutJ3:"24", NetJ3:"41", BrutJ4:"17", NetJ4:"45"},
+    {Joueur1:"MADHAVJI Moez", Joueur2:"MANJI Zakir", Categorie:"CAT 1", BrutJ1:"21", NetJ1:"32", BrutJ2:"16", NetJ2:"34", BrutJ3:"20", NetJ3:"39", BrutJ4:"15", NetJ4:"52"},
+    {Joueur1:"SAUER Marc", Joueur2:"DEVOOGT Marnix", Categorie:"CAT 1", BrutJ1:"12", NetJ1:"20", BrutJ2:"14", NetJ2:"31", BrutJ3:"17", NetJ3:"32", BrutJ4:"7", NetJ4:"34"},
+    {Joueur1:"BARZIN Philippe", Joueur2:"BARZIN Corinne*", Categorie:"CAT 1", BrutJ1:"20", NetJ1:"31", BrutJ2:"25", NetJ2:"42", BrutJ3:"25", NetJ3:"40", BrutJ4:"15", NetJ4:"47"},
+    {Joueur1:"ARTEMIEFF Peter", Joueur2:"MAES Jan", Categorie:"CAT 1", BrutJ1:"13", NetJ1:"23", BrutJ2:"24", NetJ2:"36", BrutJ3:"15", NetJ3:"27", BrutJ4:"23", NetJ4:"59"},
+    {Joueur1:"BONNE Bart", Joueur2:"BUYSSE Janvier", Categorie:"CAT 1", BrutJ1:"24", NetJ1:"35", BrutJ2:"29", NetJ2:"46", BrutJ3:"24", NetJ3:"41", BrutJ4:"19", NetJ4:"53"},
+    {Joueur1:"COOLMAN Inge*", Joueur2:"DUMORTIER_STEVENS Caroline*", Categorie:"CAT 1", BrutJ1:"13", NetJ1:"23", BrutJ2:"15", NetJ2:"33", BrutJ3:"11", NetJ3:"32", BrutJ4:"9", NetJ4:"37"},
+    {Joueur1:"FABRY Claude", Joueur2:"GRESSE Marie-Claire*", Categorie:"CAT 3", BrutJ1:"13", NetJ1:"32", BrutJ2:"16", NetJ2:"26", BrutJ3:"16", NetJ3:"33", BrutJ4:"22", NetJ4:"36"},
+    {Joueur1:"JACOBS Guido", Joueur2:"MOUMNI Bob", Categorie:"CAT 3", BrutJ1:"22", NetJ1:"41", BrutJ2:"24", NetJ2:"36", BrutJ3:"19", NetJ3:"35", BrutJ4:"30", NetJ4:"44"},
+    {Joueur1:"DE_WAELE Patrick", Joueur2:"DE_WAELE Rita*", Categorie:"CAT 3", BrutJ1:"20", NetJ1:"39", BrutJ2:"9", NetJ2:"20", BrutJ3:"10", NetJ3:"28", BrutJ4:"23", NetJ4:"38"},
+    {Joueur1:"DIERCKX Paul", Joueur2:"PLOVIER Patrick", Categorie:"CAT 3", BrutJ1:"17", NetJ1:"37", BrutJ2:"15", NetJ2:"25", BrutJ3:"9", NetJ3:"27", BrutJ4:"27", NetJ4:"42"},
+    {Joueur1:"LICK Gilbert", Joueur2:"FOCAN Hélène*", Categorie:"CAT 3", BrutJ1:"16", NetJ1:"35", BrutJ2:"16", NetJ2:"26", BrutJ3:"13", NetJ3:"31", BrutJ4:"24", NetJ4:"39"},
+    {Joueur1:"VANHAECKE Carine*", Joueur2:"VAN_DEURSEN Greta*", Categorie:"CAT 3", BrutJ1:"16", NetJ1:"38", BrutJ2:"19", NetJ2:"31", BrutJ3:"12", NetJ3:"31", BrutJ4:"23", NetJ4:"38"},
+    {Joueur1:"VANDEVYVER Lut*", Joueur2:"VAN_CALOEN Chantal*", Categorie:"CAT 3", BrutJ1:"16", NetJ1:"37", BrutJ2:"12", NetJ2:"19", BrutJ3:"11", NetJ3:"32", BrutJ4:"22", NetJ4:"37"},
+    {Joueur1:"DUFAYS Vincent", Joueur2:"BOELENS Gérard", Categorie:"CAT 3", BrutJ1:"23", NetJ1:"45", BrutJ2:"21", NetJ2:"34", BrutJ3:"18", NetJ3:"37", BrutJ4:"20", NetJ4:"36"},
+    {Joueur1:"FERMINE Anne*", Joueur2:"SABEAU Christophe", Categorie:"CAT 3", BrutJ1:"18", NetJ1:"41", BrutJ2:"24", NetJ2:"35", BrutJ3:"13", NetJ3:"33", BrutJ4:"34", NetJ4:"47"},
+    {Joueur1:"EISCHEN Germain", Joueur2:"LARUE Annick*", Categorie:"CAT 3", BrutJ1:"15", NetJ1:"37", BrutJ2:"14", NetJ2:"25", BrutJ3:"14", NetJ3:"33", BrutJ4:"17", NetJ4:"32"},
+    {Joueur1:"COPPENS Geert", Joueur2:"ORENS Ludo", Categorie:"CAT 3", BrutJ1:"20", NetJ1:"35", BrutJ2:"28", NetJ2:"39", BrutJ3:"21", NetJ3:"36", BrutJ4:"21", NetJ4:"34"},
+    {Joueur1:"CNUDDE Conny*", Joueur2:"TAELMAN Frank", Categorie:"CAT 3", BrutJ1:"16", NetJ1:"34", BrutJ2:"12", NetJ2:"26", BrutJ3:"10", NetJ3:"31", BrutJ4:"23", NetJ4:"40"},
+    {Joueur1:"LANDUYT Peter", Joueur2:"VAN_PELT Katty*", Categorie:"CAT 3", BrutJ1:"11", NetJ1:"32", BrutJ2:"17", NetJ2:"30", BrutJ3:"12", NetJ3:"33", BrutJ4:"27", NetJ4:"44"},
+    {Joueur1:"STAPPAERTS Diane*", Joueur2:"VANSTEELANT Kristof", Categorie:"CAT 3", BrutJ1:"15", NetJ1:"35", BrutJ2:"13", NetJ2:"24", BrutJ3:"10", NetJ3:"29", BrutJ4:"20", NetJ4:"37"},
+    {Joueur1:"ROBEYN Dirk", Joueur2:"SNOEYS Isabelle*", Categorie:"CAT 3", BrutJ1:"12", NetJ1:"35", BrutJ2:"17", NetJ2:"29", BrutJ3:"13", NetJ3:"35", BrutJ4:"21", NetJ4:"38"},
+    {Joueur1:"VAN_BOUCHAUTE Gilbert", Joueur2:"BOUVET Franck", Categorie:"CAT 3", BrutJ1:"18", NetJ1:"40", BrutJ2:"17", NetJ2:"31", BrutJ3:"20", NetJ3:"43", BrutJ4:"23", NetJ4:"40"},
+    {Joueur1:"CAVERENNE Jean-Louis", Joueur2:"T'SERSTEVENS Laurent", Categorie:"CAT 3", BrutJ1:"12", NetJ1:"40", BrutJ2:"7", NetJ2:"20", BrutJ3:"11", NetJ3:"38", BrutJ4:"18", NetJ4:"35"},
+    {Joueur1:"DELCOURT Bernard", Joueur2:"SAVU Nicoleta*", Categorie:"CAT 3", BrutJ1:"23", NetJ1:"45", BrutJ2:"20", NetJ2:"34", BrutJ3:"10", NetJ3:"29", BrutJ4:"23", NetJ4:"41"},
+    {Joueur1:"CLAUS Filip", Joueur2:"ROMBAUT Françoise*", Categorie:"CAT 3", BrutJ1:"14", NetJ1:"36", BrutJ2:"18", NetJ2:"30", BrutJ3:"12", NetJ3:"33", BrutJ4:"18", NetJ4:"36"},
+    {Joueur1:"DE_VRIES Peter", Joueur2:"PROOST Guido", Categorie:"CAT 3", BrutJ1:"15", NetJ1:"35", BrutJ2:"22", NetJ2:"35", BrutJ3:"17", NetJ3:"40", BrutJ4:"20", NetJ4:"38"},
+    {Joueur1:"DELVAUX Jean-Louis", Joueur2:"MERVILLE Marie-Paule*", Categorie:"CAT 3", BrutJ1:"17", NetJ1:"39", BrutJ2:"11", NetJ2:"24", BrutJ3:"6", NetJ3:"24", BrutJ4:"19", NetJ4:"36"},
+    {Joueur1:"VAN_HOORENWEDER Christine*", Joueur2:"DECLERCK Yvette*", Categorie:"CAT 3", BrutJ1:"14", NetJ1:"37", BrutJ2:"9", NetJ2:"18", BrutJ3:"4", NetJ3:"18", BrutJ4:"18", NetJ4:"36"},
+    {Joueur1:"POLET Philippe", Joueur2:"FABRY Yvonne*", Categorie:"CAT 3", BrutJ1:"13", NetJ1:"37", BrutJ2:"17", NetJ2:"32", BrutJ3:"4", NetJ3:"22", BrutJ4:"15", NetJ4:"34"},
+    {Joueur1:"WALRAVENS Didier", Joueur2:"DUTZ Regine*", Categorie:"CAT 3", BrutJ1:"18", NetJ1:"39", BrutJ2:"16", NetJ2:"30", BrutJ3:"9", NetJ3:"27", BrutJ4:"23", NetJ4:"42"},
+    {Joueur1:"BAUWENS Jannic*", Joueur2:"HUYGENS Tom", Categorie:"CAT 3", BrutJ1:"13", NetJ1:"36", BrutJ2:"11", NetJ2:"26", BrutJ3:"11", NetJ3:"35", BrutJ4:"26", NetJ4:"47"},
+    {Joueur1:"BOVE Elisabeth*", Joueur2:"LAUWAERT Monique*", Categorie:"CAT 3", BrutJ1:"15", NetJ1:"40", BrutJ2:"10", NetJ2:"24", BrutJ3:"6", NetJ3:"26", BrutJ4:"20", NetJ4:"40"},
+    {Joueur1:"LEYS Erwin", Joueur2:"HERPOEL Benny", Categorie:"CAT 3", BrutJ1:"16", NetJ1:"41", BrutJ2:"7", NetJ2:"21", BrutJ3:"8", NetJ3:"30", BrutJ4:"15", NetJ4:"34"},
+    {Joueur1:"LUCASSE Geoffrey", Joueur2:"SOMVILLE Jean-Charles", Categorie:"CAT 3", BrutJ1:"19", NetJ1:"39", BrutJ2:"11", NetJ2:"25", BrutJ3:"7", NetJ3:"25", BrutJ4:"16", NetJ4:"32"},
+    {Joueur1:"PIRSON Philippe", Joueur2:"GRIES_PIRSON Françoise*", Categorie:"CAT 3", BrutJ1:"17", NetJ1:"45", BrutJ2:"7", NetJ2:"22", BrutJ3:"7", NetJ3:"31", BrutJ4:"20", NetJ4:"40"},
+    {Joueur1:"NOENS Dirk", Joueur2:"VAN_STEELANDT Ingrid*", Categorie:"CAT 3", BrutJ1:"18", NetJ1:"39", BrutJ2:"12", NetJ2:"24", BrutJ3:"10", NetJ3:"28", BrutJ4:"18", NetJ4:"37"},
+    {Joueur1:"IRGEL Jacques", Joueur2:"VANDERHAEGHE Carol*", Categorie:"CAT 3", BrutJ1:"11", NetJ1:"32", BrutJ2:"6", NetJ2:"19", BrutJ3:"8", NetJ3:"28", BrutJ4:"11", NetJ4:"29"},
+    {Joueur1:"JAMIN Michel", Joueur2:"HUSQUINET Françoise*", Categorie:"CAT 3", BrutJ1:"13", NetJ1:"37", BrutJ2:"10", NetJ2:"24", BrutJ3:"11", NetJ3:"30", BrutJ4:"18", NetJ4:"38"},
+    {Joueur1:"GRIES Marie-Christine*", Joueur2:"EPPE Denis", Categorie:"CAT 3", BrutJ1:"9", NetJ1:"31", BrutJ2:"7", NetJ2:"21", BrutJ3:"5", NetJ3:"21", BrutJ4:"14", NetJ4:"33"},
+    {Joueur1:"CLARYSSE Bernard", Joueur2:"BRAET Catherine*", Categorie:"CAT 3", BrutJ1:"11", NetJ1:"40", BrutJ2:"7", NetJ2:"23", BrutJ3:"11", NetJ3:"40", BrutJ4:"22", NetJ4:"43"},
+    {Joueur1:"ETIENNE Marc", Joueur2:"BINET Marc", Categorie:"CAT 3", BrutJ1:"12", NetJ1:"38", BrutJ2:"7", NetJ2:"20", BrutJ3:"10", NetJ3:"35", BrutJ4:"20", NetJ4:"42"},
+    {Joueur1:"RYHEUL Christophe", Joueur2:"SLABBINCK Saskia*", Categorie:"CAT 3", BrutJ1:"2", NetJ1:"26", BrutJ2:"10", NetJ2:"24", BrutJ3:"5", NetJ3:"29", BrutJ4:"17", NetJ4:"39"},
+    {Joueur1:"GOVERS Bob", Joueur2:"DEKEYSER Jef", Categorie:"CAT 3", BrutJ1:"10", NetJ1:"36", BrutJ2:"8", NetJ2:"25", BrutJ3:"13", NetJ3:"42", BrutJ4:"17", NetJ4:"41"},
+    {Joueur1:"TONKA Jean-Louis", Joueur2:"IACHETTA David", Categorie:"CAT 3", BrutJ1:"4", NetJ1:"26", BrutJ2:"8", NetJ2:"22", BrutJ3:"4", NetJ3:"24", BrutJ4:"18", NetJ4:"40"}
   ]
 };
 
@@ -739,10 +906,74 @@ document.querySelectorAll('nav.tabs button').forEach(btn=>{
   });
 });
 
+document.querySelectorAll('#lang-switch button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    if(btn.dataset.lang === currentLang) return;
+    currentLang = btn.dataset.lang;
+    localStorage.setItem('tgeLang', currentLang);
+    document.querySelectorAll('#lang-switch button').forEach(b=>b.classList.toggle('active', b.dataset.lang===currentLang));
+    refreshLanguageDependentUI();
+  });
+});
+
+function refreshLanguageDependentUI(){
+  applyStaticTranslations();
+
+  const dayPicker = document.getElementById('day-picker');
+  if(dayPicker){
+    const activeIdx = currentDayIndex;
+    dayPicker.innerHTML = getDayLabels().map((label,i)=>`<button data-idx="${i}" class="${i===activeIdx?'active':''}">${escapeHtml(label)}</button>`).join('');
+    dayPicker.querySelectorAll('button').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        dayPicker.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        currentDayIndex = parseInt(btn.dataset.idx);
+        renderClassementJour(document.getElementById('jour-search').value);
+      });
+    });
+  }
+
+  buildMetricPicker(document.getElementById('jour-metric-picker'), ()=>jourMetric, (v)=>{
+    jourMetric = v;
+    document.getElementById('jour-cat-picker').style.display = v==='net' ? 'flex' : 'none';
+    document.getElementById('jour-cat-label').style.display = v==='net' ? 'block' : 'none';
+  }, ()=>renderClassementJour(document.getElementById('jour-search').value));
+  buildCatPicker(document.getElementById('jour-cat-picker'), ()=>jourCategory, (v)=>{ jourCategory=v; }, ()=>renderClassementJour(document.getElementById('jour-search').value));
+
+  buildMetricPicker(document.getElementById('general-metric-picker'), ()=>generalMetric, (v)=>{
+    generalMetric = v;
+    document.getElementById('general-cat-picker').style.display = v==='net' ? 'flex' : 'none';
+    document.getElementById('general-cat-label').style.display = v==='net' ? 'block' : 'none';
+  }, ()=>renderClassementGeneral(document.getElementById('general-search').value));
+  buildCatPicker(document.getElementById('general-cat-picker'), ()=>generalCategory, (v)=>{ generalCategory=v; }, ()=>renderClassementGeneral(document.getElementById('general-search').value));
+
+  renderProgramme(document.getElementById('programme-search').value);
+  renderClassementJour(document.getElementById('jour-search').value);
+  renderClassementGeneral(document.getElementById('general-search').value);
+
+  if(adminUnlocked){
+    const adminDayPicker = document.getElementById('admin-day-picker');
+    if(adminDayPicker){
+      const activeIdx = adminDayIndex;
+      adminDayPicker.innerHTML = getDayLabels().map((label,i)=>`<button data-idx="${i}" class="${i===activeIdx?'active':''}">${escapeHtml(label)}</button>`).join('');
+      adminDayPicker.querySelectorAll('button').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          adminDayPicker.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+          btn.classList.add('active');
+          adminDayIndex = parseInt(btn.dataset.idx);
+          renderAdminScoreTable(adminDayIndex);
+        });
+      });
+    }
+    renderAdminRoster();
+    renderAdminScoreTable(adminDayIndex);
+  }
+}
+
 function loadSponsors(){
   const grid = document.getElementById('sponsor-grid');
   if(!SPONSORS.length){
-    grid.innerHTML = '<div class="sponsor-fallback">Vos logos sponsors ici</div>';
+    grid.innerHTML = '<div class="sponsor-fallback">'+escapeHtml(t('sponsor_fallback'))+'</div>';
     return;
   }
   grid.innerHTML = SPONSORS.map(s=>`
@@ -766,8 +997,8 @@ function findPlayerTeam(query){
 
 function catGroupOf(categorie){
   const c = normalize(categorie);
-  if(c.includes('tiger')) return 'cat3';
-  if(c.includes('ballesteros') || c.includes('nicklaus')) return 'cat12';
+  if(c.includes('cat 3') || c.includes('cat3')) return 'cat3';
+  if(c.includes('cat 1') || c.includes('cat1') || c.includes('cat 2') || c.includes('cat2')) return 'cat12';
   return null;
 }
 
@@ -777,7 +1008,7 @@ function renderProgramme(query){
   if(query.trim()){
     team = findPlayerTeam(query);
     if(!team){
-      container.innerHTML = '<div class="empty">Aucun joueur trouvé pour "'+escapeHtml(query)+'". Vérifie l\'orthographe ou consulte le planning général ci-dessous.</div>'
+      container.innerHTML = '<div class="empty">'+escapeHtml(t('programme_not_found', query))+'</div>'
         + renderScheduleCards(null);
       return;
     }
@@ -793,8 +1024,9 @@ function mapsUrl(query){
 
 function courseLink(courseName){
   const c = COURSES[courseName];
+  const dirLabel = t('maps_directions_suffix');
   if(c){
-    return `<a class="course-link" href="${mapsUrl(c.maps)}" target="_blank" rel="noopener" aria-label="${escapeAttr(courseName)} - itinéraire"><img class="course-logo" src="${c.logo}" alt="${escapeAttr(courseName)}"></a>`;
+    return `<a class="course-link" href="${mapsUrl(c.maps)}" target="_blank" rel="noopener" aria-label="${escapeAttr(courseName)} - ${escapeAttr(dirLabel)}"><img class="course-logo" src="${c.logo}" alt="${escapeAttr(courseName)}"></a>`;
   }
   return `<a class="course-link course-link-text" href="${mapsUrl(courseName+' Tenerife')}" target="_blank" rel="noopener">${escapeHtml(courseName)}</a>`;
 }
@@ -808,7 +1040,8 @@ function venueLink(venueName){
 function venueLogo(venueName){
   const v = VENUES[venueName];
   if(!v) return '';
-  return `<a class="venue-logo-link" href="${mapsUrl(v.maps)}" target="_blank" rel="noopener" aria-label="${escapeAttr(venueName)} - itinéraire"><img class="venue-logo" src="${v.logo}" alt="${escapeAttr(venueName)}"></a>`;
+  const dirLabel = t('maps_directions_suffix');
+  return `<a class="venue-logo-link" href="${mapsUrl(v.maps)}" target="_blank" rel="noopener" aria-label="${escapeAttr(venueName)} - ${escapeAttr(dirLabel)}"><img class="venue-logo" src="${v.logo}" alt="${escapeAttr(venueName)}"></a>`;
 }
 
 function renderScheduleCards(activeGroup){
@@ -818,9 +1051,9 @@ function renderScheduleCards(activeGroup){
         <div class="day-card type-event">
           <div class="event-row">
             <div class="event-info">
-              <div class="ddate">${escapeHtml(day.date)}</div>
+              <div class="ddate">${escapeHtml(dayDateLabel(day))}</div>
               <h3>${escapeHtml(day.title)}</h3>
-              <div class="venue-line">${venueLink(day.venue)} &middot; RDV ${escapeHtml(day.time)}</div>
+              <div class="venue-line">${venueLink(day.venue)} &middot; ${escapeHtml(t('rdv_label'))} ${escapeHtml(day.time)}</div>
             </div>
             ${venueLogo(day.venue)}
           </div>
@@ -829,26 +1062,27 @@ function renderScheduleCards(activeGroup){
     if(day.type==='rest'){
       return `
         <div class="day-card type-rest">
-          <div class="ddate">${escapeHtml(day.date)}</div>
-          <h3>${escapeHtml(day.title)}</h3>
+          <div class="ddate">${escapeHtml(dayDateLabel(day))}</div>
+          <h3>${escapeHtml(day.titleKey ? t(day.titleKey) : day.title)}</h3>
         </div>`;
     }
     const row12dim = activeGroup && activeGroup!=='cat12' ? 'dim' : '';
     const row12match = activeGroup==='cat12' ? 'match' : '';
     const row3dim = activeGroup && activeGroup!=='cat3' ? 'dim' : '';
     const row3match = activeGroup==='cat3' ? 'match' : '';
+    const shotgun = escapeHtml(t('shotgun_label'));
     return `
       <div class="day-card type-play">
-        <div class="ddate">${escapeHtml(day.date)}</div>
+        <div class="ddate">${escapeHtml(dayDateLabel(day))}</div>
         <div class="play-row ${row12dim} ${row12match}">
-          <div class="row-cat">Ballesteros &amp; Nicklaus</div>
+          <div class="row-cat">${escapeHtml(t('cat12_label'))}</div>
           <span class="course">${courseLink(day.cat12.course)}</span>
-          <span class="time">Shot Gun ${escapeHtml(day.cat12.time)}</span>
+          <span class="time">${shotgun} ${escapeHtml(day.cat12.time)}</span>
         </div>
         <div class="play-row ${row3dim} ${row3match}">
-          <div class="row-cat">Tiger Woods</div>
+          <div class="row-cat">${escapeHtml(t('cat3_label'))}</div>
           <span class="course">${courseLink(day.cat3.course)}</span>
-          <span class="time">Shot Gun ${escapeHtml(day.cat3.time)}</span>
+          <span class="time">${shotgun} ${escapeHtml(day.cat3.time)}</span>
         </div>
       </div>`;
   }).join('');
@@ -866,8 +1100,8 @@ let generalCategory = CONFIG.categories[0];
 function buildMetricPicker(container, getVal, setVal, onChange){
   container.classList.add('metric');
   container.innerHTML = `
-    <button data-v="net" class="${getVal()==='net'?'active':''}">Net (HCP)</button>
-    <button data-v="brut" class="${getVal()==='brut'?'active':''}">Brut (toutes cat.)</button>
+    <button data-v="net" class="${getVal()==='net'?'active':''}">${escapeHtml(t('metric_net'))}</button>
+    <button data-v="brut" class="${getVal()==='brut'?'active':''}">${escapeHtml(t('metric_brut'))}</button>
   `;
   container.querySelectorAll('button').forEach(btn=>{
     btn.addEventListener('click', ()=>{
@@ -904,13 +1138,13 @@ async function loadClassement(){
   try{
     classementData = await fetchClassementData();
   }catch(e){
-    document.getElementById('jour-results').innerHTML = '<div class="error">Impossible de charger le classement.</div>';
-    document.getElementById('general-results').innerHTML = '<div class="error">Impossible de charger le classement.</div>';
+    document.getElementById('jour-results').innerHTML = '<div class="error">'+escapeHtml(t('err_loading_classement'))+'</div>';
+    document.getElementById('general-results').innerHTML = '<div class="error">'+escapeHtml(t('err_loading_classement'))+'</div>';
     return;
   }
 
   const dayPicker = document.getElementById('day-picker');
-  dayPicker.innerHTML = CONFIG.dayLabels.map((label,i)=>`<button data-idx="${i}" class="${i===0?'active':''}">${escapeHtml(label)}</button>`).join('');
+  dayPicker.innerHTML = getDayLabels().map((label,i)=>`<button data-idx="${i}" class="${i===0?'active':''}">${escapeHtml(label)}</button>`).join('');
   dayPicker.querySelectorAll('button').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       dayPicker.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
@@ -1001,7 +1235,7 @@ function teamLabel(r){ return `${r.Joueur1||''} / ${r.Joueur2||''}`; }
 
 function renderRanking(container, rows, query, scoreKey){
   if(!rows.length){
-    container.innerHTML = '<div class="empty">Classement pas encore disponible.</div>';
+    container.innerHTML = '<div class="empty">'+escapeHtml(t('ranking_empty'))+'</div>';
     return;
   }
   const q = normalize(query);
@@ -1037,7 +1271,7 @@ function renderRanking(container, rows, query, scoreKey){
 
   html += `
     <table class="rank">
-      <thead><tr><th>Pos</th><th>Équipe</th><th>Cat.</th><th style="text-align:right">Score</th></tr></thead>
+      <thead><tr><th>${escapeHtml(t('th_pos'))}</th><th>${escapeHtml(t('th_team'))}</th><th>${escapeHtml(t('th_cat'))}</th><th style="text-align:right">${escapeHtml(t('th_score'))}</th></tr></thead>
       <tbody>
         ${displayRows.map((r,i)=>{
           const pos = rows.indexOf(r)+1;
@@ -1055,7 +1289,7 @@ function renderRanking(container, rows, query, scoreKey){
   `;
   container.innerHTML = html;
   if(q.trim() && !highlightTeam){
-    container.innerHTML += '<div class="empty">Aucun joueur trouvé pour "'+escapeHtml(query)+'".</div>';
+    container.innerHTML += '<div class="empty">'+escapeHtml(t('search_not_found_player', query))+'</div>';
   }
 }
 
@@ -1103,13 +1337,13 @@ document.getElementById('admin-passcode').addEventListener('keydown', (e)=>{
 function initAdminContent(){
   if(!isFirebaseConfigured){
     document.getElementById('admin-content').innerHTML =
-      '<div class="error">Firebase n\'est pas encore configure (CONFIG.firebaseUrl). Les modifications ne pourront pas etre sauvegardees tant que ce n\'est pas fait.</div>';
+      '<div class="error">'+escapeHtml(t('admin_firebase_missing'))+'</div>';
     return;
   }
 
   if(classementData.length === 0){
     document.getElementById('admin-bootstrap').innerHTML =
-      '<button id="admin-import-demo-btn" class="btn-primary btn-wide">Importer la liste 2025 (78 équipes, pour démarrer)</button>';
+      '<button id="admin-import-demo-btn" class="btn-primary btn-wide">'+escapeHtml(t('admin_import_btn'))+'</button>';
     document.getElementById('admin-import-demo-btn').addEventListener('click', importDemoRoster);
   } else {
     document.getElementById('admin-bootstrap').innerHTML = '';
@@ -1118,7 +1352,7 @@ function initAdminContent(){
   document.getElementById('admin-add-team-btn').addEventListener('click', addTeam);
 
   const dayPicker = document.getElementById('admin-day-picker');
-  dayPicker.innerHTML = CONFIG.dayLabels.map((label,i)=>`<button data-idx="${i}" class="${i===0?'active':''}">${escapeHtml(label)}</button>`).join('');
+  dayPicker.innerHTML = getDayLabels().map((label,i)=>`<button data-idx="${i}" class="${i===0?'active':''}">${escapeHtml(label)}</button>`).join('');
   dayPicker.querySelectorAll('button').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       dayPicker.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
@@ -1144,7 +1378,7 @@ async function importDemoRoster(){
     await refreshClassementData();
     initAdminContent();
   }catch(e){
-    alert('Import impossible : ' + e.message);
+    alert(t('admin_import_error', e.message));
   }
 }
 
@@ -1152,7 +1386,7 @@ async function addTeam(){
   const j1 = document.getElementById('admin-new-j1').value.trim();
   const j2 = document.getElementById('admin-new-j2').value.trim();
   const cat = document.getElementById('admin-new-cat').value;
-  if(!j1 || !j2){ alert('Renseigne les deux joueurs.'); return; }
+  if(!j1 || !j2){ alert(t('admin_missing_players')); return; }
   try{
     await fbPost('classement', { Joueur1:j1, Joueur2:j2, Categorie:cat });
     document.getElementById('admin-new-j1').value = '';
@@ -1161,19 +1395,19 @@ async function addTeam(){
     renderAdminRoster();
     renderAdminScoreTable(adminDayIndex);
   }catch(e){
-    alert('Ajout impossible : ' + e.message);
+    alert(t('admin_add_error', e.message));
   }
 }
 
 async function deleteTeam(id){
-  if(!confirm('Supprimer cette équipe ?')) return;
+  if(!confirm(t('admin_delete_confirm'))) return;
   try{
     await fbDelete('classement/'+id);
     await refreshClassementData();
     renderAdminRoster();
     renderAdminScoreTable(adminDayIndex);
   }catch(e){
-    alert('Suppression impossible : ' + e.message);
+    alert(t('admin_delete_error', e.message));
   }
 }
 
@@ -1181,14 +1415,15 @@ function renderAdminRoster(){
   const container = document.getElementById('admin-roster');
   if(!container) return;
   if(!classementData.length){
-    container.innerHTML = '<div class="empty">Aucune équipe pour le moment.</div>';
+    container.innerHTML = '<div class="empty">'+escapeHtml(t('admin_roster_empty'))+'</div>';
     return;
   }
   const sorted = [...classementData].sort((a,b)=> (a.Categorie||'').localeCompare(b.Categorie||'') || teamLabel(a).localeCompare(teamLabel(b)));
+  const deleteLabel = escapeHtml(t('admin_delete_btn'));
   container.innerHTML = sorted.map(r=>`
     <div class="roster-row">
       <div class="rteam">${escapeHtml(teamLabel(r))}<span class="rcat">${escapeHtml(r.Categorie||'')}</span></div>
-      <button class="btn-danger" data-id="${escapeAttr(r._id)}">Supprimer</button>
+      <button class="btn-danger" data-id="${escapeAttr(r._id)}">${deleteLabel}</button>
     </div>
   `).join('');
   container.querySelectorAll('.btn-danger').forEach(btn=>{
@@ -1209,16 +1444,19 @@ function renderAdminScoreTable(dayIndex){
 
   let html = '';
   let lastCat = null;
+  const noCatLabel = escapeHtml(t('admin_no_category'));
+  const brutPh = escapeAttr(t('ph_brut'));
+  const netPh = escapeAttr(t('ph_net'));
   sorted.forEach(r=>{
     if(r.Categorie !== lastCat){
-      html += `<div class="score-group-label">${escapeHtml(r.Categorie||'Sans catégorie')}</div>`;
+      html += `<div class="score-group-label">${escapeHtml(r.Categorie||t('admin_no_category'))}</div>`;
       lastCat = r.Categorie;
     }
     html += `
       <div class="score-row" data-id="${escapeAttr(r._id)}">
         <div class="steam">${escapeHtml(teamLabel(r))}</div>
-        <input type="number" step="1" class="admin-brut-input" placeholder="Brut" value="${escapeAttr(r[brutCol]||'')}">
-        <input type="number" step="1" class="admin-net-input" placeholder="Net" value="${escapeAttr(r[netCol]||'')}">
+        <input type="number" step="1" class="admin-brut-input" placeholder="${brutPh}" value="${escapeAttr(r[brutCol]||'')}">
+        <input type="number" step="1" class="admin-net-input" placeholder="${netPh}" value="${escapeAttr(r[netCol]||'')}">
       </div>`;
   });
   container.innerHTML = html;
@@ -1240,14 +1478,16 @@ async function saveScoresForDay(){
   try{
     await fbPatch('classement', patch);
     await refreshClassementData();
-    statusEl.textContent = 'Scores enregistrés.';
+    statusEl.textContent = t('admin_save_ok');
     statusEl.className = 'ok';
   }catch(e){
-    statusEl.textContent = 'Erreur : ' + e.message;
+    statusEl.textContent = t('admin_save_error', e.message);
     statusEl.className = 'ko';
   }
 }
 
+document.querySelectorAll('#lang-switch button').forEach(b=>b.classList.toggle('active', b.dataset.lang===currentLang));
+applyStaticTranslations();
 loadSponsors();
 renderProgramme('');
 loadClassement();
