@@ -137,9 +137,10 @@
   .day-card .venue-line{font-size:13px;color:#5a5a5a;}
   .day-card .venue-line strong{color:var(--deep);}
   .play-row{
-    display:flex;
-    flex-direction:column;
-    gap:8px;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto auto;
+    align-items:center;
+    gap:6px 10px;
     padding:10px 12px;
     border-radius:8px;
     font-size:13.5px;
@@ -147,17 +148,17 @@
   }
   .play-row.dim{opacity:0.45;}
   .play-row.match{background:rgba(47,82,51,0.10);font-weight:700;}
-  .play-row .row-cat{font-family:'Montserrat',sans-serif;font-weight:700;color:var(--fairway);}
-  .play-row .row-bottom{
-    display:grid;
-    grid-template-columns:1fr auto 1fr;
-    align-items:center;
-    gap:10px;
+  .play-row .row-cat{
+    font-family:'Montserrat',sans-serif;
+    font-weight:700;
+    color:var(--fairway);
+    line-height:1.25;
+    min-width:0;
   }
-  .play-row .course{color:var(--deep);display:flex;align-items:center;justify-self:center;grid-column:2;}
-  .play-row .time{flex-shrink:0;white-space:nowrap;justify-self:end;grid-column:3;}
+  .play-row .course{color:var(--deep);display:flex;align-items:center;justify-self:center;}
+  .play-row .time{flex-shrink:0;white-space:nowrap;justify-self:end;font-size:13px;}
   .course-link{display:inline-flex;align-items:center;text-decoration:none;}
-  .course-logo{max-height:28px;max-width:96px;width:auto;object-fit:contain;}
+  .course-logo{max-height:26px;max-width:80px;width:auto;object-fit:contain;}
   .course-link-text{
     font-family:'Montserrat',sans-serif;
     font-weight:700;
@@ -172,6 +173,13 @@
     text-decoration:underline;
     text-underline-offset:2px;
     text-decoration-color:var(--gold);
+  }
+  @media (max-width:360px){
+    .play-row{grid-template-columns:1fr auto;row-gap:6px;}
+    .play-row .row-cat{grid-column:1/-1;}
+    .play-row .course{justify-self:start;}
+    .course-logo{max-height:24px;max-width:64px;}
+    .play-row .time{font-size:12px;}
   }
   .event-row{
     display:flex;
@@ -834,17 +842,13 @@ function renderScheduleCards(activeGroup){
         <div class="ddate">${escapeHtml(day.date)}</div>
         <div class="play-row ${row12dim} ${row12match}">
           <div class="row-cat">Ballesteros &amp; Nicklaus</div>
-          <div class="row-bottom">
-            <span class="course">${courseLink(day.cat12.course)}</span>
-            <span class="time">Shot Gun ${escapeHtml(day.cat12.time)}</span>
-          </div>
+          <span class="course">${courseLink(day.cat12.course)}</span>
+          <span class="time">Shot Gun ${escapeHtml(day.cat12.time)}</span>
         </div>
         <div class="play-row ${row3dim} ${row3match}">
           <div class="row-cat">Tiger Woods</div>
-          <div class="row-bottom">
-            <span class="course">${courseLink(day.cat3.course)}</span>
-            <span class="time">Shot Gun ${escapeHtml(day.cat3.time)}</span>
-          </div>
+          <span class="course">${courseLink(day.cat3.course)}</span>
+          <span class="time">Shot Gun ${escapeHtml(day.cat3.time)}</span>
         </div>
       </div>`;
   }).join('');
