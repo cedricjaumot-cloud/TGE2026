@@ -162,9 +162,9 @@
   .day-card .venue-line strong{color:var(--deep);}
   .play-row{
     display:grid;
-    grid-template-columns:minmax(0,1fr) auto auto;
+    grid-template-columns:112px auto minmax(0,1fr);
     align-items:center;
-    gap:6px 10px;
+    gap:6px 12px;
     padding:10px 12px;
     border-radius:8px;
     font-size:13.5px;
@@ -177,12 +177,25 @@
     font-weight:700;
     color:var(--fairway);
     line-height:1.25;
-    min-width:0;
+    white-space:nowrap;
   }
-  .play-row .course{color:var(--deep);display:flex;align-items:center;justify-self:center;}
-  .play-row .time{flex-shrink:0;white-space:nowrap;justify-self:end;font-size:13px;}
+  .play-row .course{color:var(--deep);display:flex;align-items:center;justify-self:start;}
+  .play-row .time{
+    justify-self:end;
+    text-align:right;
+    font-size:13px;
+    line-height:1.3;
+  }
+  .time .format-sub{
+    display:block;
+    font-family:'Montserrat',sans-serif;
+    font-size:11px;
+    font-weight:400;
+    color:#8a8a8a;
+    margin-top:2px;
+  }
   .course-link{display:inline-flex;align-items:center;text-decoration:none;}
-  .course-logo{max-height:26px;max-width:80px;width:auto;object-fit:contain;}
+  .course-logo{max-height:44px;max-width:130px;width:auto;object-fit:contain;}
   .course-link-text{
     font-family:'Montserrat',sans-serif;
     font-weight:700;
@@ -198,11 +211,76 @@
     text-underline-offset:2px;
     text-decoration-color:var(--gold);
   }
+  .brunch-note{
+    font-size:12.5px;
+    color:#6a6a6a;
+    margin-top:4px;
+  }
+  .photo-card{
+    background:var(--white);
+    border:1px solid #e2e2e2;
+    border-left:4px solid var(--gold);
+    border-radius:var(--radius);
+    padding:14px 16px;
+    margin-bottom:10px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .photo-card .pdate{
+    font-family:'Montserrat',sans-serif;
+    font-weight:700;
+    color:var(--deep);
+    font-size:14px;
+  }
+  .photo-card a.photo-link{
+    font-family:'Montserrat',sans-serif;
+    font-weight:700;
+    font-size:12.5px;
+    color:var(--white);
+    background:var(--ocean);
+    padding:9px 14px;
+    border-radius:var(--radius);
+    text-decoration:none;
+    white-space:nowrap;
+  }
+  .photo-card a.photo-link:hover{background:var(--deep);}
+  .photo-card .photo-empty{
+    font-size:12.5px;
+    color:#9a9a9a;
+    font-style:italic;
+  }
+  .admin-photo-row{
+    display:grid;
+    grid-template-columns:90px minmax(0,1fr);
+    align-items:center;
+    gap:10px;
+    background:var(--white);
+    border:1px solid #e2e2e2;
+    border-radius:var(--radius);
+    padding:8px 12px;
+    margin-bottom:6px;
+  }
+  .admin-photo-row .apdate{
+    font-family:'Montserrat',sans-serif;
+    font-weight:700;
+    font-size:12px;
+    color:var(--fairway);
+  }
+  .admin-photo-row input{
+    padding:8px 10px;
+    border:1px solid #d9d9d9;
+    border-radius:8px;
+    font-size:13px;
+    font-family:inherit;
+  }
   @media (max-width:360px){
-    .play-row{grid-template-columns:1fr auto;row-gap:6px;}
-    .play-row .row-cat{grid-column:1/-1;}
+    .play-row{grid-template-columns:auto minmax(0,1fr);row-gap:6px;}
+    .play-row .row-cat{grid-column:1/-1;white-space:normal;}
     .play-row .course{justify-self:start;}
-    .course-logo{max-height:24px;max-width:64px;}
+    .course-logo{max-height:36px;max-width:96px;}
     .play-row .time{font-size:12px;}
   }
   .event-row{
@@ -476,6 +554,7 @@
   <button data-panel="programme" class="active" data-i18n="nav_programme">Programme</button>
   <button data-panel="jour" data-i18n="nav_jour">Classement du jour</button>
   <button data-panel="general" data-i18n="nav_general">Classement général</button>
+  <button data-panel="photos" data-i18n="nav_photos">Photos</button>
   <button data-panel="admin" data-i18n="nav_admin">Admin</button>
 </nav>
 
@@ -516,8 +595,13 @@
     <div id="general-results"></div>
   </section>
 
+  <section id="panel-photos" class="panel">
+    <h2 class="section-title"><span class="num">04</span> <span data-i18n="nav_photos">Photos</span></h2>
+    <div id="photos-list"></div>
+  </section>
+
   <section id="panel-admin" class="panel">
-    <h2 class="section-title"><span class="num">04</span> <span data-i18n="nav_admin">Admin</span></h2>
+    <h2 class="section-title"><span class="num">05</span> <span data-i18n="nav_admin">Admin</span></h2>
 
     <div id="admin-gate">
       <div class="info-note" data-i18n="admin_gate_note">Accès réservé. Entre le code pour gérer les équipes et saisir les scores.</div>
@@ -550,6 +634,11 @@
       <div id="admin-scores"></div>
       <button id="admin-save-scores-btn" class="btn-primary btn-wide" data-i18n="admin_save_btn">Enregistrer les scores de cette journée</button>
       <div id="admin-save-status"></div>
+
+      <h3 class="admin-subtitle" data-i18n="admin_photos_title">Liens Photos</h3>
+      <div id="admin-photos"></div>
+      <button id="admin-save-photos-btn" class="btn-primary btn-wide" data-i18n="admin_save_photos_btn">Enregistrer les liens photos</button>
+      <div id="admin-photos-status"></div>
     </div>
   </section>
 
@@ -608,8 +697,17 @@ const TRANSLATIONS = {
     nav_programme: "Programme",
     nav_jour: "Classement du jour",
     nav_general: "Classement général",
+    nav_photos: "Photos",
     nav_admin: "Admin",
-    programme_info: 'Practices accessibles <strong>1h avant les départs</strong>. Départs vers les trous <strong>15 minutes avant</strong> le Shot Gun.',
+    photos_view_btn: "Voir l'album photos",
+    photos_not_yet: "Album pas encore disponible",
+    admin_photos_title: "Liens Photos",
+    admin_save_photos_btn: "Enregistrer les liens photos",
+    admin_photos_ok: "Liens photos enregistrés.",
+    admin_photos_error: (m)=>`Erreur : ${m}`,
+    photos_link_ph: "Lien Google Photos",
+    programme_info: 'On joue en <strong>Individual Stableford</strong>.<br>Practices accessibles <strong>1h avant les départs</strong>.<br>Départs vers les trous <strong>15 minutes avant</strong> le Shot Gun.',
+    ntp_label: "NTP trous",
     programme_search_ph: "Tape ton nom pour ton programme perso",
     label_day: "Journée",
     label_ranking: "Classement",
@@ -629,6 +727,10 @@ const TRANSLATIONS = {
     day_sun: "Dimanche", day_mon: "Lundi", day_tue: "Mardi", day_wed: "Mercredi", day_thu: "Jeudi", day_fri: "Vendredi",
     evening_suffix: "soir",
     rest_title: "Repos",
+    wed_brunch_title: "Brunch CBRE / Avantespacia",
+    wed_brunch_time: "11h00 - 17h00",
+    wed_brunch_note1: "Chacun vient quand il le désire.",
+    wed_brunch_note2: "🎟️ Votre visite sera récompensée par une participation à la Tombola.",
     rdv_label: "RDV",
     shotgun_label: "Shot Gun",
     cat12_label: "CAT 1 & 2",
@@ -665,8 +767,17 @@ const TRANSLATIONS = {
     nav_programme: "Programma",
     nav_jour: "Klassement van de dag",
     nav_general: "Algemeen klassement",
+    nav_photos: "Foto's",
     nav_admin: "Admin",
-    programme_info: 'Practice toegankelijk <strong>1u voor vertrek</strong>. Vertrek naar de holes <strong>15 minuten voor</strong> de Shot Gun.',
+    photos_view_btn: "Bekijk het fotoalbum",
+    photos_not_yet: "Album nog niet beschikbaar",
+    admin_photos_title: "Foto-links",
+    admin_save_photos_btn: "Foto-links opslaan",
+    admin_photos_ok: "Foto-links opgeslagen.",
+    admin_photos_error: (m)=>`Fout: ${m}`,
+    photos_link_ph: "Google Photos link",
+    programme_info: 'Er wordt gespeeld in <strong>Individual Stableford</strong>.<br>Practice toegankelijk <strong>1u voor vertrek</strong>.<br>Vertrek naar de holes <strong>15 minuten voor</strong> de Shot Gun.',
+    ntp_label: "NTP holes",
     programme_search_ph: "Typ je naam voor je persoonlijk programma",
     label_day: "Dag",
     label_ranking: "Klassement",
@@ -686,6 +797,10 @@ const TRANSLATIONS = {
     day_sun: "Zondag", day_mon: "Maandag", day_tue: "Dinsdag", day_wed: "Woensdag", day_thu: "Donderdag", day_fri: "Vrijdag",
     evening_suffix: "avond",
     rest_title: "Rustdag",
+    wed_brunch_title: "CBRE / Avantespacia Brunch",
+    wed_brunch_time: "11u00 - 17u00",
+    wed_brunch_note1: "Kom gerust wanneer het je uitkomt.",
+    wed_brunch_note2: "🎟️ Je bezoek wordt beloond met een deelname aan de tombola.",
     rdv_label: "Afspraak",
     shotgun_label: "Shot Gun",
     cat12_label: "CAT 1 & 2",
@@ -749,19 +864,20 @@ function dayDateLabel(day){
 const WEEK_SCHEDULE = [
   {dayKey:"sun", dateNum:"06/09", type:"event", title:"Opening Party", venue:"Amarilla Golf Residences", time:"18h00"},
   {dayKey:"mon", dateNum:"07/09", type:"play",
-    cat12:{course:"Golf del Sur", time:"9h30"},
-    cat3:{course:"Golf Costa Adeje", time:"9h00"}},
+    cat12:{course:"Golf del Sur", time:"9h30", gameType:"Scramble", ntp:[2,18]},
+    cat3:{course:"Golf Costa Adeje", time:"9h00", gameType:"4BBB", ntp:[5,16]}},
   {dayKey:"tue", dateNum:"08/09", type:"play",
-    cat12:{course:"Abama Golf", time:"9h00"},
-    cat3:{course:"Golf del Sur", time:"9h30"}},
-  {dayKey:"wed", dateNum:"09/09", type:"rest", titleKey:"rest_title"},
+    cat12:{course:"Abama Golf", time:"9h00", gameType:"4BBB", ntp:[7,14]},
+    cat3:{course:"Golf del Sur", time:"9h30", gameType:"4BBB", ntp:[2,18]}},
+  {dayKey:"wed", dateNum:"09/09", type:"rest", titleKey:"rest_title",
+    brunch:{venue:"TALAÏA Résidences", address:"Calle Las Galgas 4, Callao Salvaje", time:"11h00 - 17h00"}},
   {dayKey:"thu", dateNum:"10/09", type:"play",
-    cat12:{course:"Amarilla Golf", time:"9h30"},
-    cat3:{course:"Abama Golf", time:"9h00"}},
+    cat12:{course:"Amarilla Golf", time:"9h30", gameType:"4BBB", ntp:[8,15]},
+    cat3:{course:"Abama Golf", time:"9h00", gameType:"Scramble", ntp:[7,14]}},
   {dayKey:"fri", dateNum:"11/09", type:"play",
-    cat12:{course:"Golf Costa Adeje", time:"9h00"},
-    cat3:{course:"Amarilla Golf", time:"9h30"}},
-  {dayKey:"fri", dateNum:"11/09", evening:true, type:"event", title:"Talaïa Night by CBRE (White Party)", venue:"Las Rocas Beach Club", time:"18h30"}
+    cat12:{course:"Golf Costa Adeje", time:"9h00", gameType:"4BBB Aggregate", ntp:[5,16]},
+    cat3:{course:"Amarilla Golf", time:"9h30", gameType:"4BBB", ntp:[8,15]}},
+  {dayKey:"fri", dateNum:"11/09", evening:true, type:"event", title:"Talaïa Night by CBRE (White\u00A0Party)", venue:"Las Rocas Beach Club", time:"18h30"}
 ];
 
 const COURSES = {
@@ -924,6 +1040,8 @@ document.querySelectorAll('#lang-switch button').forEach(btn=>{
 
 function refreshLanguageDependentUI(){
   applyStaticTranslations();
+  renderPhotos();
+  if(adminUnlocked) renderAdminPhotos();
 
   const dayPicker = document.getElementById('day-picker');
   if(dayPicker){
@@ -973,6 +1091,83 @@ function refreshLanguageDependentUI(){
     }
     renderAdminRoster();
     renderAdminScoreTable(adminDayIndex);
+  }
+}
+
+/* ---------------- PHOTOS ---------------- */
+const PHOTO_DAYS = [
+  {dayKey:"sun", dateNum:"06/09"},
+  {dayKey:"mon", dateNum:"07/09"},
+  {dayKey:"tue", dateNum:"08/09"},
+  {dayKey:"wed", dateNum:"09/09"},
+  {dayKey:"thu", dateNum:"10/09"},
+  {dayKey:"fri", dateNum:"11/09"}
+];
+let photosData = {};
+
+async function loadPhotos(){
+  try{
+    photosData = isFirebaseConfigured ? ((await fbGet('photos')) || {}) : {};
+  }catch(e){
+    photosData = {};
+  }
+  renderPhotos();
+  if(adminUnlocked) renderAdminPhotos();
+}
+
+function renderPhotos(){
+  const container = document.getElementById('photos-list');
+  if(!container) return;
+  container.innerHTML = PHOTO_DAYS.map(d=>{
+    const label = `${t('day_'+d.dayKey)} ${d.dateNum}`;
+    const url = photosData[d.dayKey];
+    if(url){
+      return `
+        <div class="photo-card">
+          <div class="pdate">${escapeHtml(label)}</div>
+          <a class="photo-link" href="${escapeAttr(url)}" target="_blank" rel="noopener">${escapeHtml(t('photos_view_btn'))}</a>
+        </div>`;
+    }
+    return `
+        <div class="photo-card">
+          <div class="pdate">${escapeHtml(label)}</div>
+          <div class="photo-empty">${escapeHtml(t('photos_not_yet'))}</div>
+        </div>`;
+  }).join('');
+}
+
+function renderAdminPhotos(){
+  const container = document.getElementById('admin-photos');
+  if(!container) return;
+  const ph = escapeAttr(t('photos_link_ph'));
+  container.innerHTML = PHOTO_DAYS.map(d=>{
+    const label = `${t('day_'+d.dayKey)} ${d.dateNum}`;
+    const val = photosData[d.dayKey] || '';
+    return `
+      <div class="admin-photo-row" data-daykey="${d.dayKey}">
+        <div class="apdate">${escapeHtml(label)}</div>
+        <input type="url" class="admin-photo-input" placeholder="${ph}" value="${escapeAttr(val)}">
+      </div>`;
+  }).join('');
+}
+
+async function savePhotosForDays(){
+  const rows = document.querySelectorAll('#admin-photos .admin-photo-row');
+  const patch = {};
+  rows.forEach(row=>{
+    const key = row.dataset.daykey;
+    const val = row.querySelector('.admin-photo-input').value.trim();
+    patch[key] = val === '' ? null : val;
+  });
+  const statusEl = document.getElementById('admin-photos-status');
+  try{
+    await fbPut('photos', patch);
+    await loadPhotos();
+    statusEl.textContent = t('admin_photos_ok');
+    statusEl.className = 'ok';
+  }catch(e){
+    statusEl.textContent = t('admin_photos_error', e.message);
+    statusEl.className = 'ko';
   }
 }
 
@@ -1066,10 +1261,15 @@ function renderScheduleCards(activeGroup){
         </div>`;
     }
     if(day.type==='rest'){
+      const brunchHtml = day.brunch ? `
+          <div class="venue-line">🥂 ${escapeHtml(t('wed_brunch_title'))} &middot; <a class="venue-link" href="${mapsUrl(day.brunch.address+' Tenerife')}" target="_blank" rel="noopener">${escapeHtml(day.brunch.venue)}</a> &middot; ${escapeHtml(t('wed_brunch_time'))}</div>
+          <div class="brunch-note">${escapeHtml(t('wed_brunch_note1'))}</div>
+          <div class="brunch-note">${escapeHtml(t('wed_brunch_note2'))}</div>` : '';
       return `
         <div class="day-card type-rest">
           <div class="ddate">${escapeHtml(dayDateLabel(day))}</div>
           <h3>${escapeHtml(day.titleKey ? t(day.titleKey) : day.title)}</h3>
+          ${brunchHtml}
         </div>`;
     }
     const row12dim = activeGroup && activeGroup!=='cat12' ? 'dim' : '';
@@ -1077,18 +1277,21 @@ function renderScheduleCards(activeGroup){
     const row3dim = activeGroup && activeGroup!=='cat3' ? 'dim' : '';
     const row3match = activeGroup==='cat3' ? 'match' : '';
     const shotgun = escapeHtml(t('shotgun_label'));
+    const ntpLabel = escapeHtml(t('ntp_label'));
+    const timeCell = (info)=>`
+          <span class="time">${shotgun} ${escapeHtml(info.time)}<span class="format-sub">${escapeHtml(info.gameType)} &middot; ${ntpLabel} ${info.ntp.join(' &amp; ')}</span></span>`;
     return `
       <div class="day-card type-play">
         <div class="ddate">${escapeHtml(dayDateLabel(day))}</div>
         <div class="play-row ${row12dim} ${row12match}">
           <div class="row-cat">${escapeHtml(t('cat12_label'))}</div>
           <span class="course">${courseLink(day.cat12.course)}</span>
-          <span class="time">${shotgun} ${escapeHtml(day.cat12.time)}</span>
+          ${timeCell(day.cat12)}
         </div>
         <div class="play-row ${row3dim} ${row3match}">
           <div class="row-cat">${escapeHtml(t('cat3_label'))}</div>
           <span class="course">${courseLink(day.cat3.course)}</span>
-          <span class="time">${shotgun} ${escapeHtml(day.cat3.time)}</span>
+          ${timeCell(day.cat3)}
         </div>
       </div>`;
   }).join('');
@@ -1399,9 +1602,11 @@ function initAdminContent(){
   });
 
   document.getElementById('admin-save-scores-btn').addEventListener('click', saveScoresForDay);
+  document.getElementById('admin-save-photos-btn').addEventListener('click', savePhotosForDays);
 
   renderAdminRoster();
   renderAdminScoreTable(adminDayIndex);
+  renderAdminPhotos();
 }
 
 async function importDemoRoster(){
@@ -1527,6 +1732,7 @@ applyStaticTranslations();
 loadSponsors();
 renderProgramme('');
 loadClassement();
+loadPhotos();
 </script>
 
 </body>
