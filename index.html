@@ -769,7 +769,7 @@ const TRANSLATIONS = {
     admin_photos_ok: "Liens photos enregistrés.",
     admin_photos_error: (m)=>`Erreur : ${m}`,
     photos_link_ph: "Lien Google Photos",
-    programme_info: 'On joue en <strong>Stableford par équipe</strong>.<br>Practices accessibles <strong>1h avant les départs</strong>.<br>Départs vers les trous <strong>15 minutes avant</strong> le Shot Gun.',
+    programme_info: 'On joue en <strong>Stableford</strong>.<br>Practices accessibles <strong>1h avant les départs</strong>.<br>Départs vers les trous <strong>15 minutes avant</strong> le Shot Gun.',
     ntp_label: "NTP trous",
     programme_search_ph: "Tape ton nom pour ton programme perso",
     label_day: "Journée",
@@ -839,7 +839,7 @@ const TRANSLATIONS = {
     admin_photos_ok: "Foto-links opgeslagen.",
     admin_photos_error: (m)=>`Fout: ${m}`,
     photos_link_ph: "Google Photos link",
-    programme_info: 'Er wordt gespeeld in <strong>Team Stableford</strong>.<br>Practice toegankelijk <strong>1u voor vertrek</strong>.<br>Vertrek naar de holes <strong>15 minuten voor</strong> de Shot Gun.',
+    programme_info: 'Er wordt gespeeld in <strong>Stableford</strong>.<br>Practice toegankelijk <strong>1u voor vertrek</strong>.<br>Vertrek naar de holes <strong>15 minuten voor</strong> de Shot Gun.',
     ntp_label: "NTP holes",
     programme_search_ph: "Typ je naam voor je persoonlijk programma",
     label_day: "Dag",
@@ -1698,6 +1698,21 @@ document.querySelectorAll('nav.tabs button[data-panel]').forEach(btn=>{
 });
 
 document.querySelectorAll('#lang-switch button').forEach(b=>b.classList.toggle('active', b.dataset.lang===currentLang));
+
+document.querySelectorAll('#lang-switch button[data-lang]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    currentLang = btn.dataset.lang;
+    localStorage.setItem('tgeLang', currentLang);
+    document.querySelectorAll('#lang-switch button').forEach(b=>b.classList.toggle('active', b.dataset.lang===currentLang));
+    applyStaticTranslations();
+    loadSponsors();
+    renderProgramme(document.getElementById('programme-search').value);
+    renderClassementJour(document.getElementById('jour-search').value);
+    renderClassementGeneral(document.getElementById('general-search').value);
+    renderPhotos();
+    if(adminUnlocked) initAdminContent();
+  });
+});
 applyStaticTranslations();
 loadSponsors();
 renderProgramme('');
