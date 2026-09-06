@@ -1125,6 +1125,58 @@ function buildCatPicker(container, getVal, setVal, onChange){
   });
 }
 
+const isFirebaseConfigured = !!(CONFIG.firebaseUrl && CONFIG.firebaseUrl.trim());
+
+async function fbGet(path){
+  const res = await fetch(`${CONFIG.firebaseUrl}/${path}.json`);
+  if(!res.ok) throw new Error('Firebase GET '+res.status);
+  return res.json();
+}
+
+async function fbPost(path, value){
+  const res = await fetch(`${CONFIG.firebaseUrl}/${path}.json`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(value)
+  });
+  if(!res.ok) throw new Error('Firebase POST '+res.status);
+  return res.json();
+}
+
+async function fbPut(path, value){
+  const res = await fetch(`${CONFIG.firebaseUrl}/${path}.json`, {
+    method:'PUT',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(value)
+  });
+  if(!res.ok) throw new Error('Firebase PUT '+res.status);
+  return res.json();
+}
+
+async function fbPatch(path, value){
+  const res = await fetch(`${CONFIG.firebaseUrl}/${path}.json`, {
+    method:'PATCH',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(value)
+  });
+  if(!res.ok) throw new Error('Firebase PATCH '+res.status);
+  return res.json();
+}
+
+async function fbDelete(path){
+  const res = await fetch(`${CONFIG.firebaseUrl}/${path}.json`, { method:'DELETE' });
+  if(!res.ok) throw new Error('Firebase DELETE '+res.status);
+  return res.json();
+}
+
+const DEMO = {
+  classement: [
+    { Joueur1:"Joueur Demo 1", Joueur2:"Joueur Demo 2", Categorie:"CAT 1" },
+    { Joueur1:"Joueur Demo 3", Joueur2:"Joueur Demo 4", Categorie:"CAT 2" },
+    { Joueur1:"Joueur Demo 5", Joueur2:"Joueur Demo 6", Categorie:"CAT 3" }
+  ]
+};
+
 async function fetchClassementData(){
   if(isFirebaseConfigured){
     const data = await fbGet('classement');
