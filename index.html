@@ -576,7 +576,54 @@
     white-space:nowrap;
   }
   .photo-link-btn:hover{background:var(--deep);}
+  .photo-links{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;}
   .photo-badge{font-size:12px;color:#7a7a7a;font-style:italic;white-space:nowrap;}
+  .admin-photo-day{
+    background:var(--white);
+    border:1px solid #e2e2e2;
+    border-radius:var(--radius);
+    padding:10px 12px;
+    margin-bottom:8px;
+  }
+  .admin-photo-day .pday{font-size:12.5px;color:var(--deep);font-weight:600;margin-bottom:6px;}
+  .admin-photo-input-row{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin-bottom:6px;
+  }
+  .admin-photo-input-row input{
+    flex:1;
+    padding:8px 10px;
+    border:1px solid #d9d9d9;
+    border-radius:8px;
+    font-size:13.5px;
+    font-family:'Montserrat',sans-serif;
+  }
+  .admin-photo-remove-btn{
+    flex-shrink:0;
+    width:28px;
+    height:28px;
+    border:1px solid #d9d9d9;
+    background:var(--white);
+    border-radius:50%;
+    color:#b5442e;
+    font-size:16px;
+    line-height:1;
+    cursor:pointer;
+  }
+  .admin-photo-remove-btn:hover{background:#f7e9e6;}
+  .admin-photo-add-btn{
+    background:none;
+    border:1px dashed var(--fairway);
+    color:var(--fairway);
+    font-size:12.5px;
+    font-weight:600;
+    padding:6px 12px;
+    border-radius:16px;
+    cursor:pointer;
+  }
+  .admin-photo-add-btn:hover{background:#eef6ef;}
   .admin-photo-row{
     display:grid;
     grid-template-columns:110px 1fr;
@@ -769,6 +816,7 @@ const TRANSLATIONS = {
     admin_photos_ok: "Liens photos enregistrés.",
     admin_photos_error: (m)=>`Erreur : ${m}`,
     photos_link_ph: "Lien Google Photos",
+    photos_add_link_btn: "+ Ajouter un album",
     programme_info: 'On joue en <strong>Stableford</strong>.<br>Practices accessibles <strong>1h avant les départs</strong>.<br>Départs vers les trous <strong>15 minutes avant</strong> le Shot Gun.',
     ntp_label: "NTP trous",
     programme_search_ph: "Tape ton nom pour ton programme perso",
@@ -839,6 +887,7 @@ const TRANSLATIONS = {
     admin_photos_ok: "Foto-links opgeslagen.",
     admin_photos_error: (m)=>`Fout: ${m}`,
     photos_link_ph: "Google Photos link",
+    photos_add_link_btn: "+ Album toevoegen",
     programme_info: 'Er wordt gespeeld in <strong>Stableford</strong>.<br>Practice toegankelijk <strong>1u voor vertrek</strong>.<br>Vertrek naar de holes <strong>15 minuten voor</strong> de Shot Gun.',
     ntp_label: "NTP holes",
     programme_search_ph: "Typ je naam voor je persoonlijk programma",
@@ -1616,9 +1665,10 @@ async function saveScoresForDay(){
   }
 }
 
-/* ---------------- PHOTOS (un lien Google Photos par jour) ---------------- */
+/* ---------------- PHOTOS (plusieurs liens Google Photos par jour) ---------------- */
 
 let photosData = {};
+let adminPhotosDraft = {};
 
 const PHOTO_DAYS = [
   {key:"sun", date:"06/09"},
@@ -1636,9 +1686,11 @@ function photoDayLabel(d){
 function renderPhotos(){
   const container = document.getElementById('photos-list');
   container.innerHTML = PHOTO_DAYS.map(d=>{
-    const link = photosData[d.key];
-    const right = link
-      ? `<a class="photo-link-btn" href="${escapeAttr(link)}" target="_blank" rel="noopener">${escapeHtml(t('photos_view_btn'))}</a>`
+    const links = photosData[d.key] || [];
+    const right = links.length
+      ? `<div class="photo-links">${links.map((link, i)=>
+          `<a class="photo-link-btn" href="${escapeAttr(link)}" target="_blank" rel="noopener">${escapeHtml(t('photos_view_btn'))}${links.length>1 ? ' '+(i+1) : ''}</a>`
+        ).join('')}</div>`
       : `<span class="photo-badge">${escapeHtml(t('photos_not_yet'))}</span>`;
     return `<div class="photo-day-row"><span class="pday">${escapeHtml(photoDayLabel(d))}</span>${right}</div>`;
   }).join('');
@@ -1646,33 +1698,77 @@ function renderPhotos(){
 
 async function loadPhotos(){
   try{
-    photosData = isFirebaseConfigured ? (await fbGet('photos') || {}) : {};
+    const raw = isFirebaseConfigured ? (await fbGet('photos') || {}) : {};
+    photosData = {};
+    Object.keys(raw).forEach(k=>{
+      const v = raw[k];
+      photosData[k] = Array.isArray(v) ? v.filter(Boolean) : (v ? [v] : []);
+    });
   }catch(e){
     photosData = {};
   }
   renderPhotos();
 }
 
+function syncAdminPhotosDraftFromDom(){
+  document.querySelectorAll('#admin-photos .admin-photo-day').forEach(dayBlock=>{
+    const day = dayBlock.dataset.day;
+    const vals = [...dayBlock.querySelectorAll('.admin-photo-input')].map(inp=>inp.value.trim());
+    adminPhotosDraft[day] = vals;
+  });
+}
+
 function renderAdminPhotos(){
+  adminPhotosDraft = {};
+  PHOTO_DAYS.forEach(d=>{
+    const links = photosData[d.key] || [];
+    adminPhotosDraft[d.key] = links.length ? [...links] : [''];
+  });
+  renderAdminPhotosFromDraft();
+}
+
+function renderAdminPhotosFromDraft(){
   const container = document.getElementById('admin-photos');
   const ph = escapeAttr(t('photos_link_ph'));
   container.innerHTML = PHOTO_DAYS.map(d=>{
-    const val = escapeAttr(photosData[d.key] || '');
+    const links = adminPhotosDraft[d.key] && adminPhotosDraft[d.key].length ? adminPhotosDraft[d.key] : [''];
+    const inputs = links.map((val, idx)=>`
+        <div class="admin-photo-input-row">
+          <input type="url" class="admin-photo-input" data-day="${d.key}" data-idx="${idx}" placeholder="${ph}" value="${escapeAttr(val)}">
+          <button type="button" class="admin-photo-remove-btn" data-day="${d.key}" data-idx="${idx}" aria-label="Retirer">&times;</button>
+        </div>`).join('');
     return `
-      <div class="admin-photo-row" data-day="${d.key}">
-        <span class="pday">${escapeHtml(photoDayLabel(d))}</span>
-        <input type="url" class="admin-photo-input" placeholder="${ph}" value="${val}">
+      <div class="admin-photo-day" data-day="${d.key}">
+        <div class="pday">${escapeHtml(photoDayLabel(d))}</div>
+        ${inputs}
+        <button type="button" class="admin-photo-add-btn" data-day="${d.key}">${escapeHtml(t('photos_add_link_btn'))}</button>
       </div>`;
   }).join('');
 }
 
+document.getElementById('admin-photos').addEventListener('click', (e)=>{
+  const addBtn = e.target.closest('.admin-photo-add-btn');
+  const removeBtn = e.target.closest('.admin-photo-remove-btn');
+  if(!addBtn && !removeBtn) return;
+  syncAdminPhotosDraftFromDom();
+  if(addBtn){
+    const day = addBtn.dataset.day;
+    adminPhotosDraft[day].push('');
+  }else if(removeBtn){
+    const day = removeBtn.dataset.day;
+    const idx = Number(removeBtn.dataset.idx);
+    adminPhotosDraft[day].splice(idx, 1);
+    if(!adminPhotosDraft[day].length) adminPhotosDraft[day] = [''];
+  }
+  renderAdminPhotosFromDraft();
+});
+
 async function savePhotosForDays(){
-  const rows = document.querySelectorAll('#admin-photos .admin-photo-row');
+  syncAdminPhotosDraftFromDom();
   const patch = {};
-  rows.forEach(row=>{
-    const day = row.dataset.day;
-    const val = row.querySelector('.admin-photo-input').value.trim();
-    patch[day] = val === '' ? null : val;
+  Object.keys(adminPhotosDraft).forEach(day=>{
+    const links = adminPhotosDraft[day].map(v=>v.trim()).filter(Boolean);
+    patch[day] = links.length ? links : null;
   });
   const statusEl = document.getElementById('admin-photos-status');
   try{
