@@ -1395,12 +1395,12 @@ function renderRanking(container, rows, query, scoreKey){
       highlightPos = rows.indexOf(found)+1;
     }
   }
-  const top5 = rows.slice(0,5);
-  let displayRows = top5;
+  const top10 = rows.slice(0,10);
+  let displayRows = top10;
   let showDivider = false;
-  if(highlightTeam && !top5.some(r=>teamLabel(r)===highlightTeam)){
-    displayRows = [...top5, highlightRow];
-    showDivider = highlightPos > 6;
+  if(highlightTeam && !top10.some(r=>teamLabel(r)===highlightTeam)){
+    displayRows = [...top10, highlightRow];
+    showDivider = highlightPos > 11;
   }
 
   let html = '';
