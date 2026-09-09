@@ -1024,7 +1024,7 @@ const WEEK_SCHEDULE = [
     cat12:{course:"Abama Golf", time:"9h00", gameType:"4BBB", ntp:[7,14]},
     cat3:{course:"Golf del Sur", time:"9h30", gameType:"4BBB", ntp:[2,18]}},
   {dayKey:"wed", dateNum:"09/09", type:"rest", titleKey:"rest_title",
-    brunch:{venue:"TALAÏA Résidences", address:"Calle Las Galgas 4, Callao Salvaje", time:"11h00 - 17h00"}},
+    brunch:{venue:"TALAÏA Résidences", address:"Avenida de la Galga 4, 38678 Callao Salvaje", mapsLink:"https://maps.app.goo.gl/Lu2NktgvnHsKQZqdA", time:"11h00 - 17h00"}},
   {dayKey:"thu", dateNum:"10/09", type:"play",
     cat12:{course:"Amarilla Golf", time:"9h30", gameType:"4BBB", ntp:[8,15]},
     cat3:{course:"Abama Golf", time:"9h00", gameType:"Scramble", ntp:[7,14]}},
@@ -1190,7 +1190,7 @@ function renderScheduleCards(activeGroup){
     }
     if(day.type==='rest'){
       const brunchHtml = day.brunch ? `
-          <div class="venue-line">🥂 ${escapeHtml(t('wed_brunch_title'))} &middot; <a class="venue-link" href="${mapsUrl(day.brunch.address+' Tenerife')}" target="_blank" rel="noopener">${escapeHtml(day.brunch.venue)}</a> &middot; ${escapeHtml(t('wed_brunch_time'))}</div>
+          <div class="venue-line">🥂 ${escapeHtml(t('wed_brunch_title'))} &middot; <a class="venue-link" href="${day.brunch.mapsLink || mapsUrl(day.brunch.address+' Tenerife')}" target="_blank" rel="noopener">${escapeHtml(day.brunch.venue)}</a> &middot; ${escapeHtml(t('wed_brunch_time'))}</div>
           <div class="brunch-note">${escapeHtml(t('wed_brunch_note1'))}</div>
           <div class="brunch-note">${escapeHtml(t('wed_brunch_note2'))}</div>` : '';
       return `
