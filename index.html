@@ -519,9 +519,20 @@
   }
   .roster-row .rteam{color:var(--deep);}
   .roster-row .rcat{font-size:11px;color:#7a7a7a;margin-left:6px;}
+  .roster-row .rdepart-wrap{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+  .roster-row .rdepart-wrap label{font-size:10.5px;color:#7a7a7a;white-space:nowrap;}
+  .roster-row .rdepart-input{
+    width:54px;
+    padding:6px;
+    border:1px solid #d9d9d9;
+    border-radius:8px;
+    font-size:13px;
+    text-align:center;
+    font-family:'Montserrat',sans-serif;
+  }
   .score-row{
     display:grid;
-    grid-template-columns:1fr 70px 70px;
+    grid-template-columns:1fr 70px 70px 60px;
     align-items:center;
     gap:8px;
     background:var(--white);
@@ -769,6 +780,7 @@
       <h3 class="admin-subtitle" data-i18n="admin_scores_title">Scores du jour</h3>
       <div class="picker-label" data-i18n="label_day">Journée</div>
       <div class="pill-picker" id="admin-day-picker"></div>
+      <div class="info-note" data-i18n="admin_depart_note">Départage : en cas d'égalité, le nombre le plus petit passe devant (laisser vide = pas de préférence).</div>
       <div id="admin-scores"></div>
       <button id="admin-save-scores-btn" class="btn-primary btn-wide" data-i18n="admin_save_btn">Enregistrer les scores de cette journée</button>
       <div id="admin-save-status"></div>
@@ -829,6 +841,7 @@ const CONFIG = {
   adminPasscode: "EssaiErreur",
   dayNetColumns:  ["NetJ1","NetJ2","NetJ3","NetJ4"],
   dayBrutColumns: ["BrutJ1","BrutJ2","BrutJ3","BrutJ4"],
+  dayDepartColumns: ["DepartJ1","DepartJ2","DepartJ3","DepartJ4"],
   categories: ["CAT 1","CAT 2","CAT 3"]
 };
 
@@ -909,6 +922,9 @@ const TRANSLATIONS = {
     err_loading_classement: "Impossible de charger le classement.",
     ph_brut: "Brut",
     ph_net: "Net",
+    ph_depart: "Départage",
+    admin_depart_note: "Départage du jour : en cas d'égalité sur cette journée, le nombre le plus petit passe devant (laisser vide = pas de préférence).",
+    ph_depart_general: "Départage général",
     maps_directions_suffix: "itinéraire"
   },
   nl: {
@@ -984,6 +1000,9 @@ const TRANSLATIONS = {
     err_loading_classement: "Kan het klassement niet laden.",
     ph_brut: "Bruto",
     ph_net: "Net",
+    ph_depart: "Tiebreak",
+    admin_depart_note: "Tiebreak van de dag: bij gelijke stand op deze dag komt het kleinste getal eerst (leeg laten = geen voorkeur).",
+    ph_depart_general: "Tiebreak algemeen",
     maps_directions_suffix: "route"
   }
 };
@@ -1145,6 +1164,14 @@ function renderProgramme(query){
   const activeGroup = team ? catGroupOf(team.categorie) : null;
   const tag = team ? `<div class="perso-tag">${escapeHtml(team.equipe)} · ${escapeHtml(team.categorie||'')}</div>` : '';
   container.innerHTML = tag + renderScheduleCards(activeGroup);
+}
+
+function compareRanking(a, b, departKey){
+  if(b._score !== a._score) return b._score - a._score;
+  const da = (departKey && a[departKey]!==undefined && a[departKey]!==null && a[departKey]!=='') ? Number(a[departKey]) : Infinity;
+  const db = (departKey && b[departKey]!==undefined && b[departKey]!==null && b[departKey]!=='') ? Number(b[departKey]) : Infinity;
+  if(da !== db) return da - db;
+  return teamLabel(a).localeCompare(teamLabel(b));
 }
 
 function mapsUrl(query){
@@ -1389,7 +1416,7 @@ function renderClassementJour(query){
     .filter(r => jourMetric==='brut' || r.Categorie===jourCategory)
     .map(r=>({...r, _score: parseFloat((r[col]||'').toString().replace(',','.'))}))
     .filter(r=>!isNaN(r._score));
-  rows.sort((a,b)=>b._score-a._score);
+  rows.sort((a,b)=>compareRanking(a, b, CONFIG.dayDepartColumns[currentDayIndex]));
   renderRanking(container, rows, query, '_score');
 }
 document.getElementById('jour-search').addEventListener('input', (e)=>renderClassementJour(e.target.value));
@@ -1415,7 +1442,7 @@ function renderClassementGeneral(query){
       return {...r, _score: hasAny ? sum : NaN};
     })
     .filter(r=>!isNaN(r._score));
-  rows.sort((a,b)=>b._score-a._score);
+  rows.sort((a,b)=>compareRanking(a, b, 'DepartGeneral'));
   renderRanking(container, rows, query, '_score');
 }
 document.getElementById('general-search').addEventListener('input', (e)=>renderClassementGeneral(e.target.value));
@@ -1641,14 +1668,31 @@ function renderAdminRoster(){
   }
   const sorted = [...classementData].sort((a,b)=> (a.Categorie||'').localeCompare(b.Categorie||'') || teamLabel(a).localeCompare(teamLabel(b)));
   const deleteLabel = escapeHtml(t('admin_delete_btn'));
+  const departGeneralLabel = escapeHtml(t('ph_depart_general'));
   container.innerHTML = sorted.map(r=>`
     <div class="roster-row">
       <div class="rteam">${escapeHtml(teamLabel(r))}<span class="rcat">${escapeHtml(r.Categorie||'')}</span></div>
+      <div class="rdepart-wrap">
+        <label>${departGeneralLabel}</label>
+        <input type="number" step="1" class="rdepart-input" data-id="${escapeAttr(r._id)}" value="${escapeAttr(r.DepartGeneral!==undefined && r.DepartGeneral!==null ? r.DepartGeneral : '')}">
+      </div>
       <button class="btn-danger" data-id="${escapeAttr(r._id)}">${deleteLabel}</button>
     </div>
   `).join('');
   container.querySelectorAll('.btn-danger').forEach(btn=>{
     btn.addEventListener('click', ()=>deleteTeam(btn.dataset.id));
+  });
+  container.querySelectorAll('.rdepart-input').forEach(inp=>{
+    inp.addEventListener('change', async ()=>{
+      const id = inp.dataset.id;
+      const val = inp.value.trim();
+      try{
+        await fbPatch('classement', {[`${id}/DepartGeneral`]: val === '' ? null : val});
+        await refreshClassementData();
+      }catch(e){
+        inp.style.borderColor = '#b5442e';
+      }
+    });
   });
 }
 
@@ -1661,6 +1705,7 @@ function renderAdminScoreTable(dayIndex){
   }
   const brutCol = CONFIG.dayBrutColumns[dayIndex];
   const netCol = CONFIG.dayNetColumns[dayIndex];
+  const departCol = CONFIG.dayDepartColumns[dayIndex];
   const sorted = [...classementData].sort((a,b)=> (a.Categorie||'').localeCompare(b.Categorie||'') || teamLabel(a).localeCompare(teamLabel(b)));
 
   let html = '';
@@ -1668,6 +1713,7 @@ function renderAdminScoreTable(dayIndex){
   const noCatLabel = escapeHtml(t('admin_no_category'));
   const brutPh = escapeAttr(t('ph_brut'));
   const netPh = escapeAttr(t('ph_net'));
+  const departPh = escapeAttr(t('ph_depart'));
   sorted.forEach(r=>{
     if(r.Categorie !== lastCat){
       html += `<div class="score-group-label">${escapeHtml(r.Categorie||t('admin_no_category'))}</div>`;
@@ -1678,6 +1724,7 @@ function renderAdminScoreTable(dayIndex){
         <div class="steam">${escapeHtml(teamLabel(r))}</div>
         <input type="number" step="1" class="admin-brut-input" placeholder="${brutPh}" value="${escapeAttr(r[brutCol]||'')}">
         <input type="number" step="1" class="admin-net-input" placeholder="${netPh}" value="${escapeAttr(r[netCol]||'')}">
+        <input type="number" step="1" class="admin-depart-input" placeholder="${departPh}" value="${escapeAttr(r[departCol]!==undefined && r[departCol]!==null ? r[departCol] : '')}">
       </div>`;
   });
   container.innerHTML = html;
@@ -1686,14 +1733,17 @@ function renderAdminScoreTable(dayIndex){
 async function saveScoresForDay(){
   const brutCol = CONFIG.dayBrutColumns[adminDayIndex];
   const netCol = CONFIG.dayNetColumns[adminDayIndex];
+  const departCol = CONFIG.dayDepartColumns[adminDayIndex];
   const rows = document.querySelectorAll('#admin-scores .score-row');
   const patch = {};
   rows.forEach(row=>{
     const id = row.dataset.id;
     const brut = row.querySelector('.admin-brut-input').value;
     const net = row.querySelector('.admin-net-input').value;
+    const depart = row.querySelector('.admin-depart-input').value;
     patch[`${id}/${brutCol}`] = brut === '' ? null : brut;
     patch[`${id}/${netCol}`] = net === '' ? null : net;
+    patch[`${id}/${departCol}`] = depart === '' ? null : depart;
   });
   const statusEl = document.getElementById('admin-save-status');
   try{
@@ -1840,7 +1890,7 @@ function buildFullCategoryRanking(cat){
       return {...r, _score: hasAny ? sum : NaN};
     })
     .filter(r=>!isNaN(r._score));
-  rows.sort((a,b)=>b._score-a._score);
+  rows.sort((a,b)=>compareRanking(a, b, 'DepartGeneral'));
   return rows;
 }
 
