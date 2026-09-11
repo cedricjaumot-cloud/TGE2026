@@ -2206,7 +2206,11 @@ function renderAdminPrintOptions(){
     </label>`).join('');
   html += `
     <label class="print-option-row">
-      <input type="checkbox" id="print-general-check">
+      <input type="checkbox" id="print-general-net-check">
+      <span>${escapeHtml(t('nav_general'))} — ${netSuffix}</span>
+    </label>
+    <label class="print-option-row">
+      <input type="checkbox" id="print-general-brut-check">
       <span>${escapeHtml(t('nav_general'))} — ${brutSuffix}</span>
     </label>`;
   container.innerHTML = html;
@@ -2235,10 +2239,11 @@ function appendRankingSection(html, title, rows){
 
 function printSelectedRankings(){
   const dayIndexes = [...document.querySelectorAll('.print-day-check:checked')].map(cb=>Number(cb.dataset.day));
-  const printGeneral = document.getElementById('print-general-check').checked;
+  const printGeneralNet = document.getElementById('print-general-net-check').checked;
+  const printGeneralBrut = document.getElementById('print-general-brut-check').checked;
   const statusEl = document.getElementById('admin-print-status');
 
-  if(!dayIndexes.length && !printGeneral){
+  if(!dayIndexes.length && !printGeneralNet && !printGeneralBrut){
     statusEl.textContent = t('admin_print_empty');
     return;
   }
@@ -2257,7 +2262,15 @@ function printSelectedRankings(){
     });
   });
 
-  if(printGeneral){
+  if(printGeneralNet){
+    html += `<h1>${escapeHtml(t('nav_general'))} — ${escapeHtml(t('print_net_suffix'))}</h1>`;
+    CONFIG.categories.forEach(cat=>{
+      const rows = buildRankingForPrint(cat, CONFIG.dayNetColumns, 'DepartGeneral');
+      html = appendRankingSection(html, cat, rows);
+    });
+  }
+
+  if(printGeneralBrut){
     html += `<h1>${escapeHtml(t('nav_general'))} — ${escapeHtml(t('print_brut_suffix'))}</h1>`;
     CONFIG.categories.forEach(cat=>{
       const rows = buildRankingForPrint(cat, CONFIG.dayBrutColumns, 'DepartGeneral');
