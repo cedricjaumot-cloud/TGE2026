@@ -645,6 +645,7 @@
       color:#1c1c1c;
     }
     #print-full-ranking-area h1{font-size:20px;margin-bottom:4px;}
+    #print-full-ranking-area h1:not(:first-of-type){page-break-before:always;margin-top:0;}
     #print-full-ranking-area .print-date{font-size:12px;color:#555;margin-bottom:18px;}
     #print-full-ranking-area h2{
       font-size:15px;
@@ -736,6 +737,21 @@
     color:#333;
   }
   .flight-player .fidx{color:#7a7a7a;font-size:11px;white-space:nowrap;}
+
+  .print-option-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:var(--white);
+    border:1px solid #e2e2e2;
+    border-radius:var(--radius);
+    padding:10px 14px;
+    margin-bottom:6px;
+    font-size:13.5px;
+    cursor:pointer;
+  }
+  .print-option-row input{width:18px;height:18px;flex-shrink:0;}
+  #admin-print-status{margin-top:10px;font-size:13px;font-weight:600;color:#b5442e;}
 
   .gala-blackout .gala-text{font-size:14px;color:#555;max-width:320px;line-height:1.5;}
 </style>
@@ -866,8 +882,10 @@
       <div id="admin-photos-status"></div>
 
       <h3 class="admin-subtitle" data-i18n="admin_print_title">Classement complet</h3>
-      <div class="info-note" data-i18n="admin_print_note">Génère la liste complète (sans limite de 10) des 3 catégories, prête à imprimer ou exporter en PDF.</div>
-      <button id="admin-print-ranking-btn" class="btn-primary btn-wide" data-i18n="admin_print_btn">Imprimer le classement complet</button>
+      <div class="info-note" data-i18n="admin_print_note">Coche ce que tu veux imprimer (3 catégories à chaque fois), puis imprime ou exporte en PDF.</div>
+      <div id="admin-print-options"></div>
+      <button id="admin-print-ranking-btn" class="btn-primary btn-wide" data-i18n="admin_print_btn">Imprimer la sélection</button>
+      <div id="admin-print-status"></div>
     </div>
   </section>
 
@@ -939,8 +957,11 @@ const TRANSLATIONS = {
     admin_photos_title: "Liens Photos",
     admin_save_photos_btn: "Enregistrer les liens photos",
     admin_print_title: "Classement complet",
-    admin_print_note: "Génère la liste complète (sans limite de 10) des 3 catégories, prête à imprimer ou exporter en PDF.",
-    admin_print_btn: "Imprimer le classement complet",
+    admin_print_note: "Coche ce que tu veux imprimer (3 catégories à chaque fois), puis imprime ou exporte en PDF.",
+    admin_print_btn: "Imprimer la sélection",
+    print_net_suffix: "Net",
+    print_brut_suffix: "Brut",
+    admin_print_empty: "Coche au moins une case avant d'imprimer.",
     print_ranking_title: "Classement général complet — Tenerife Golf Event",
     admin_photos_ok: "Liens photos enregistrés.",
     admin_photos_error: (m)=>`Erreur : ${m}`,
@@ -1022,8 +1043,11 @@ const TRANSLATIONS = {
     admin_photos_title: "Foto-links",
     admin_save_photos_btn: "Foto-links opslaan",
     admin_print_title: "Volledige rangschikking",
-    admin_print_note: "Genereert de volledige lijst (zonder limiet van 10) van de 3 categorieën, klaar om af te drukken of als PDF te exporteren.",
-    admin_print_btn: "Volledige rangschikking afdrukken",
+    admin_print_note: "Vink aan wat je wil afdrukken (telkens 3 categorieën), en druk af of exporteer als PDF.",
+    admin_print_btn: "Selectie afdrukken",
+    print_net_suffix: "Net",
+    print_brut_suffix: "Bruto",
+    admin_print_empty: "Vink minstens één optie aan voor je afdrukt.",
     print_ranking_title: "Volledige algemene rangschikking — Tenerife Golf Event",
     admin_photos_ok: "Foto-links opgeslagen.",
     admin_photos_error: (m)=>`Fout: ${m}`,
@@ -2154,8 +2178,7 @@ async function savePhotosForDays(){
 
 /* ---------------- IMPRESSION : classement complet (sans limite de 10) ---------------- */
 
-function buildFullCategoryRanking(cat){
-  const cols = CONFIG.dayNetColumns;
+function buildRankingForPrint(cat, cols, departKey){
   let rows = classementData
     .filter(r => r.Categorie === cat)
     .map(r=>{
@@ -2167,34 +2190,81 @@ function buildFullCategoryRanking(cat){
       return {...r, _score: hasAny ? sum : NaN};
     })
     .filter(r=>!isNaN(r._score));
-  rows.sort((a,b)=>compareRanking(a, b, 'DepartGeneral'));
+  rows.sort((a,b)=>compareRanking(a, b, departKey));
   return rows;
 }
 
-function printFullGeneralRanking(){
+function renderAdminPrintOptions(){
+  const container = document.getElementById('admin-print-options');
+  const dayLabels = getDayLabels();
+  const netSuffix = escapeHtml(t('print_net_suffix'));
+  const brutSuffix = escapeHtml(t('print_brut_suffix'));
+  let html = dayLabels.map((label, i)=>`
+    <label class="print-option-row">
+      <input type="checkbox" class="print-day-check" data-day="${i}">
+      <span>${escapeHtml(label)} — ${netSuffix}</span>
+    </label>`).join('');
+  html += `
+    <label class="print-option-row">
+      <input type="checkbox" id="print-general-check">
+      <span>${escapeHtml(t('nav_general'))} — ${brutSuffix}</span>
+    </label>`;
+  container.innerHTML = html;
+}
+
+function appendRankingSection(html, title, rows){
+  html += `<h2>${escapeHtml(title)}</h2>`;
+  if(!rows.length){
+    html += `<p>${escapeHtml(t('ranking_empty'))}</p>`;
+  }else{
+    html += `
+      <table>
+        <thead><tr><th class="pos">${escapeHtml(t('th_pos'))}</th><th>${escapeHtml(t('th_team'))}</th><th style="text-align:right">${escapeHtml(t('th_score'))}</th></tr></thead>
+        <tbody>
+          ${rows.map((r,i)=>`
+            <tr>
+              <td class="pos">${i+1}</td>
+              <td>${escapeHtml(teamLabel(r))}</td>
+              <td style="text-align:right">${escapeHtml(String(r._score))}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>`;
+  }
+  return html;
+}
+
+function printSelectedRankings(){
+  const dayIndexes = [...document.querySelectorAll('.print-day-check:checked')].map(cb=>Number(cb.dataset.day));
+  const printGeneral = document.getElementById('print-general-check').checked;
+  const statusEl = document.getElementById('admin-print-status');
+
+  if(!dayIndexes.length && !printGeneral){
+    statusEl.textContent = t('admin_print_empty');
+    return;
+  }
+  statusEl.textContent = '';
+
+  const dayLabels = getDayLabels();
   const area = document.getElementById('print-full-ranking-area');
   const dateStr = new Date().toLocaleDateString(currentLang==='nl' ? 'nl-BE' : 'fr-BE', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
   let html = `<h1>${escapeHtml(t('print_ranking_title'))}</h1><div class="print-date">${escapeHtml(dateStr)}</div>`;
-  CONFIG.categories.forEach(cat=>{
-    const rows = buildFullCategoryRanking(cat);
-    html += `<h2>${escapeHtml(cat)}</h2>`;
-    if(!rows.length){
-      html += `<p>${escapeHtml(t('ranking_empty'))}</p>`;
-    }else{
-      html += `
-        <table>
-          <thead><tr><th class="pos">${escapeHtml(t('th_pos'))}</th><th>${escapeHtml(t('th_team'))}</th><th style="text-align:right">${escapeHtml(t('th_score'))}</th></tr></thead>
-          <tbody>
-            ${rows.map((r,i)=>`
-              <tr>
-                <td class="pos">${i+1}</td>
-                <td>${escapeHtml(teamLabel(r))}</td>
-                <td style="text-align:right">${escapeHtml(String(r._score))}</td>
-              </tr>`).join('')}
-          </tbody>
-        </table>`;
-    }
+
+  dayIndexes.forEach(dayIndex=>{
+    html += `<h1>${escapeHtml(dayLabels[dayIndex])} — ${escapeHtml(t('print_net_suffix'))}</h1>`;
+    CONFIG.categories.forEach(cat=>{
+      const rows = buildRankingForPrint(cat, [CONFIG.dayNetColumns[dayIndex]], CONFIG.dayDepartColumns[dayIndex]);
+      html = appendRankingSection(html, cat, rows);
+    });
   });
+
+  if(printGeneral){
+    html += `<h1>${escapeHtml(t('nav_general'))} — ${escapeHtml(t('print_brut_suffix'))}</h1>`;
+    CONFIG.categories.forEach(cat=>{
+      const rows = buildRankingForPrint(cat, CONFIG.dayBrutColumns, 'DepartGeneral');
+      html = appendRankingSection(html, cat, rows);
+    });
+  }
+
   area.innerHTML = html;
   document.body.classList.add('print-mode-full-ranking');
   window.print();
@@ -2204,7 +2274,8 @@ window.addEventListener('afterprint', ()=>{
   document.body.classList.remove('print-mode-full-ranking');
 });
 
-document.getElementById('admin-print-ranking-btn').addEventListener('click', printFullGeneralRanking);
+renderAdminPrintOptions();
+document.getElementById('admin-print-ranking-btn').addEventListener('click', printSelectedRankings);
 
 document.querySelectorAll('nav.tabs button[data-panel]').forEach(btn=>{
   btn.addEventListener('click', ()=>{
